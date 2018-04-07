@@ -183,13 +183,18 @@ nav h1 a {
   text-transform: uppercase;
 }
 
-/* ====================== Restaurant Details ====================== */
+/* ====================== Restaurant Details Page ====================== */
+/* ====================== Restaurant Details Header ====================== */
 .inside header {
   position: fixed;
   top: 0;
   width: 100%;
   z-index: 1000;
 }
+
+/* ====================== Restaurant Details Main ====================== */
+
+/* Map */
 .inside #map-container {
   background: blue none repeat scroll 0 0;
   height: 87%;
@@ -198,16 +203,16 @@ nav h1 a {
   top: 80px;
   width: 50%;
 }
+
+
 .inside #map {
   background-color: #ccc;
   height: 100%;
   width: 100%;
 }
-.inside #footer {
-  bottom: 0;
-  position: absolute;
-  width: 50%;
-}
+
+
+/* Restaurant Details */
 #restaurant-name {
   color: #f18200;
   font-family: Arial,sans-serif;
@@ -218,13 +223,19 @@ nav h1 a {
   text-transform: uppercase;
   line-height: 1.1;
 }
+
+
 #restaurant-img {
 	width: 90%;
 }
+
+
 #restaurant-address {
   font-size: 12pt;
   margin: 10px 0px;
 }
+
+
 #restaurant-cuisine {
   background-color: #333;
   color: #ddd;
@@ -237,15 +248,27 @@ nav h1 a {
   text-transform: uppercase;
 	width: 90%;
 }
+
+
+#restaurant-hours td {
+  color: #666;
+}
+
+
+/* Restaurant Reviews */
 #restaurant-container, #reviews-container {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
   padding: 140px 40px 30px;
   width: 50%;
 }
+
+
 #reviews-container {
   padding: 30px 40px 80px;
 }
+
+
 #reviews-container h2 {
   color: #f58500;
   font-size: 24pt;
@@ -253,10 +276,14 @@ nav h1 a {
   letter-spacing: -1px;
   padding-bottom: 1pt;
 }
+
+
 #reviews-list {
   margin: 0;
   padding: 0;
 }
+
+
 #reviews-list li {
   background-color: #fff;
     border: 2px solid #f3f3f3;
@@ -268,9 +295,16 @@ nav h1 a {
   position: relative;
   width: 85%;
 }
+
+
 #reviews-list li p {
   margin: 0 0 10px;
 }
-#restaurant-hours td {
-  color: #666;
+
+
+/* ====================== Restaurant Details Footer ====================== */
+.inside #footer {
+  bottom: 0;
+  position: absolute;
+  width: 100%;
 }
