@@ -12,6 +12,12 @@ body {
 	margin: 0;
 	position:relative;
 }
+
+nav a, button {
+	min-width: 48 px;
+	min-height: 48 px;
+}
+
 ul, li {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 10pt;
@@ -279,7 +285,7 @@ nav h1 a {
 
 
 #reviews-list {
-  margin: 0;
+  margin-bottom: 30px ;
   padding: 0;
 }
 
@@ -307,4 +313,51 @@ nav h1 a {
   bottom: 0;
   position: absolute;
   width: 100%;
+}
+
+/* ====================== Restaurant Details Media Queries ====================== */
+
+@media screen and (max-width: 1200px){
+  .inside #maincontent {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .inside header {
+    position: static;
+    top: 0;
+    width: 100%;
+  }  
+
+  .inside #breadcrumb {
+    padding: 10px 20px 16px;
+    width: calc(100% - 40px);
+  }
+
+  .inside #restaurant-img,
+  .inside #restaurant-cuisine {
+    width: 100%;
+  }
+
+  .inside #map-container {
+    background: blue none repeat scroll 0 0;
+    height: 400px;
+    position: static;
+    width: 90%;
+    margin: auto;
+  }
+
+  #restaurant-container,
+  #reviews-container {
+    border-bottom: 1px solid #d9d9d9;
+    border-top: 1px solid #fff;
+    padding: 30px 0px 30px;
+    width: 100%;
+  }
+
+  .inside #footer {
+    position: static;
+    width: 100%;
+    padding: 25px 0px 25px 0px;
+  }
 }
