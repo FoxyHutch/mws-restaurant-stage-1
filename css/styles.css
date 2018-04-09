@@ -24,7 +24,7 @@ ul, li {
 	color: #333;
 }
 a {
-	color: orange;
+	color: #aa5a00;
 	text-decoration: none;
 }
 a:hover, a:focus {
@@ -163,7 +163,7 @@ nav h1 a {
   min-width: 100%;
 }
 #restaurants-list li h1 {
-  color: #f18200;
+  color: #aa5a00;
   font-family: Arial,sans-serif;
   font-size: 14pt;
   font-weight: 200;
@@ -177,7 +177,7 @@ nav h1 a {
   font-size: 11pt;
 }
 #restaurants-list li a {
-  background-color: orange;
+  background-color: #aa5a00;
   border-bottom: 3px solid #eee;
   color: #fff;
   display: inline-block;
@@ -220,7 +220,7 @@ nav h1 a {
 
 /* Restaurant Details */
 #restaurant-name {
-  color: #f18200;
+  color: #aa5a00;
   font-family: Arial,sans-serif;
   font-size: 20pt;
   font-weight: 200;
