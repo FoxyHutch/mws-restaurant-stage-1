@@ -24,7 +24,7 @@ ul, li {
 	color: #333;
 }
 a {
-	color: #aa5a00;
+	color: #f58500;
 	text-decoration: none;
 }
 a:hover, a:focus {
@@ -47,7 +47,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 }
 #footer {
   background-color: #444;
-  color: #aaa;
+  color: #dddbdb;
   font-size: 8pt;
   letter-spacing: 1px;
   padding: 25px;
@@ -94,7 +94,7 @@ nav h1 a {
 
 /* Add a color to all links inside the list */
 #breadcrumb li a {
-    color: #0275d8;
+    color: #006cc9;
     text-decoration: none;
 }
 
@@ -112,7 +112,7 @@ nav h1 a {
 /* ====================== Restaurant Filtering ====================== */
 .filter-options {
   width: 100%;
-  background-color: #3397DB;
+  background-color: #005e8f;
   align-items: center;
   text-align: center;
 }
@@ -276,7 +276,7 @@ nav h1 a {
 
 
 #reviews-container h2 {
-  color: #f58500;
+  color: #aa5a00;
   font-size: 24pt;
   font-weight: 300;
   letter-spacing: -1px;
