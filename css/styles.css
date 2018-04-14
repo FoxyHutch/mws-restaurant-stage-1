@@ -24,7 +24,7 @@ ul, li {
 	color: #333;
 }
 a {
-	color: #f58500;
+	color: #fe974e;
 	text-decoration: none;
 }
 a:hover, a:focus {
@@ -54,6 +54,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
   text-align: center;
   text-transform: uppercase;
 }
+
 /* ====================== Navigation ====================== */
 nav {
   width: 100%;
@@ -76,6 +77,7 @@ nav h1 a {
   text-align: left;
   height: auto;
 }
+
 
 #breadcrumb {
     padding: 10px 40px 16px;
@@ -322,6 +324,25 @@ nav h1 a {
 }
 
 /* ====================== Restaurant Details Media Queries ====================== */
+
+
+@media screen and (min-width: 900px){
+  #restaurants-list li {
+    display: inline-block;
+    width: 40%;
+    margin: 2%;
+  }
+}
+
+@media screen and (min-width: 1200px){
+  #restaurants-list li {
+    display: inline-block;
+    width: 27%;
+    margin: 2%;
+  }
+}
+
+
 
 @media screen and (max-width: 1200px){
   .inside #maincontent {
