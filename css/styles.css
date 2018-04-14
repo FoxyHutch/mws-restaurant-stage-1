@@ -24,7 +24,7 @@ ul, li {
 	color: #333;
 }
 a {
-	color: orange;
+	color: #fe974e;
 	text-decoration: none;
 }
 a:hover, a:focus {
@@ -47,13 +47,14 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 }
 #footer {
   background-color: #444;
-  color: #aaa;
+  color: #dddbdb;
   font-size: 8pt;
   letter-spacing: 1px;
   padding: 25px;
   text-align: center;
   text-transform: uppercase;
 }
+
 /* ====================== Navigation ====================== */
 nav {
   width: 100%;
@@ -71,6 +72,13 @@ nav h1 a {
   letter-spacing: 10px;
   text-transform: uppercase;
 }
+
+.breadcrumb {
+  text-align: left;
+  height: auto;
+}
+
+
 #breadcrumb {
     padding: 10px 40px 16px;
     list-style: none;
@@ -94,7 +102,7 @@ nav h1 a {
 
 /* Add a color to all links inside the list */
 #breadcrumb li a {
-    color: #0275d8;
+    color: #006cc9;
     text-decoration: none;
 }
 
@@ -112,7 +120,7 @@ nav h1 a {
 /* ====================== Restaurant Filtering ====================== */
 .filter-options {
   width: 100%;
-  background-color: #3397DB;
+  background-color: #005e8f;
   align-items: center;
   text-align: center;
 }
@@ -163,7 +171,7 @@ nav h1 a {
   min-width: 100%;
 }
 #restaurants-list li h1 {
-  color: #f18200;
+  color: #aa5a00;
   font-family: Arial,sans-serif;
   font-size: 14pt;
   font-weight: 200;
@@ -177,7 +185,7 @@ nav h1 a {
   font-size: 11pt;
 }
 #restaurants-list li a {
-  background-color: orange;
+  background-color: #aa5a00;
   border-bottom: 3px solid #eee;
   color: #fff;
   display: inline-block;
@@ -220,7 +228,7 @@ nav h1 a {
 
 /* Restaurant Details */
 #restaurant-name {
-  color: #f18200;
+  color: #aa5a00;
   font-family: Arial,sans-serif;
   font-size: 20pt;
   font-weight: 200;
@@ -275,8 +283,8 @@ nav h1 a {
 }
 
 
-#reviews-container h2 {
-  color: #f58500;
+#reviews-container h3 {
+  color: #aa5a00;
   font-size: 24pt;
   font-weight: 300;
   letter-spacing: -1px;
@@ -313,6 +321,24 @@ nav h1 a {
   bottom: 0;
   position: absolute;
   width: 100%;
+}
+
+/* ====================== Restaurant Main Media Queries ====================== */
+
+@media screen and (min-width: 900px){
+  #restaurants-list li {
+    display: inline-block;
+    width: 40%;
+    margin: 2%;
+  }
+}
+
+@media screen and (min-width: 1200px){
+  #restaurants-list li {
+    display: inline-block;
+    width: 27%;
+    margin: 2%;
+  }
 }
 
 /* ====================== Restaurant Details Media Queries ====================== */
@@ -364,7 +390,7 @@ nav h1 a {
 }
 
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 600px) {
   .inside #map-container {
     width: 100%;
   }
