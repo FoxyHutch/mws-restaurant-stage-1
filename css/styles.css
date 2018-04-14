@@ -323,8 +323,7 @@ nav h1 a {
   width: 100%;
 }
 
-/* ====================== Restaurant Details Media Queries ====================== */
-
+/* ====================== Restaurant Main Media Queries ====================== */
 
 @media screen and (min-width: 900px){
   #restaurants-list li {
@@ -342,7 +341,7 @@ nav h1 a {
   }
 }
 
-
+/* ====================== Restaurant Details Media Queries ====================== */
 
 @media screen and (max-width: 1200px){
   .inside #maincontent {
@@ -391,7 +390,7 @@ nav h1 a {
 }
 
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 600px) {
   .inside #map-container {
     width: 100%;
   }
