@@ -1,4 +1,5 @@
-const cacheName = 'v5';
+const cacheName = 'v17';
+
 
 self.addEventListener('install', function (event) {
     console.log('SW: Service Worker installed');
@@ -6,7 +7,6 @@ self.addEventListener('install', function (event) {
         caches.open(cacheName).then(function (cache) {
             console.log('SW: Caching Files');
             return cache.addAll([
-                '/skeleton',
                 '/index.html',
                 '/css/styles.css',
                 '/restaurant.html',
@@ -14,11 +14,22 @@ self.addEventListener('install', function (event) {
                 '/js/main.js',
                 '/js/restaurant_info.js',
                 '/data/restaurants.json',
-                '/img/1.jpg'
+                '/img/1.jpg',
+                '/img/2.jpg',
+                '/img/3.jpg',
+                '/img/4.jpg',
+                '/img/5.jpg',
+                '/img/6.jpg',
+                '/img/7.jpg',
+                '/img/8.jpg',
+                '/img/9.jpg',
+                '/img/10.jpg'
             ])
         })
     )
 })
+
+
 
 self.addEventListener('activate', function (event) {
     console.log('SW: Service Worker activated');
@@ -38,24 +49,24 @@ self.addEventListener('activate', function (event) {
     )
 })
 
+// Match in cache and fetch
 self.addEventListener('fetch', function (event) {
-    console.log('SW: Service Worker is fetching');
 
-    event.respondWith(
-        caches.match(event.request).then(function (resp) {
-
-
-            return resp || fetch(event.request).then(function (response) {
-                const responseClone = response.clone();
-                caches.open(cacheName).then(function (cache) {
-                    cache.put(event.request, responseClone);
-
+    /* for restaurant urls */
+        if(event.request.url.includes('restaurant.html?id=')){
+            const strippedurl = event.request.url.split('?')[0];
+    
+            event.respondWith(
+                caches.match(strippedurl).then(function(response){
+                    return response || fetch(event.response);
                 })
-                return response;
+            );
+            return;
+        }
+    /* for all other URLs */
+        event.respondWith(
+            caches.match(event.request).then(function(response){
+                return response || fetch(event.request);
             })
-                .catch(function (err) {
-                    console.log('SW: Error while fetching and Caching:', err);
-                });
-        })
-    )
-})
+        );
+    });
