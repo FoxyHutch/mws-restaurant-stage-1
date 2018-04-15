@@ -315,20 +315,45 @@ nav h1 a {
 
 #reviews-list li {
   background-color: #fff;
-  border: 2px solid #d9d9d9;
   border-radius: 5px;
   display: block;
   list-style-type: none;
   margin: 30px auto;
   overflow: hidden;
-  /*padding: 0 20px 20px;*/
   position: relative;
   width: 85%;
 }
 
+.review-name {
+  background-color: #252831;
+  color: white;
+  padding-left: 10px;
+  margin: 0 0 10px 0;
+  width: calc(50% - 10px);
+  float: left;
+}
 
-#reviews-list li p {
-  margin: 0 0 10px;
+.review-date {
+  padding-left: 10px;
+  margin: 0 0 10px 0;
+  width: calc(50% - 10px);
+  float: right;
+  background-color: #252831;
+  color: white;
+}
+
+.review-rating {
+  width: 20%;
+  background-color: #aa5a00;
+  color: white;
+  text-align: center;
+  margin: 0 0 10px 10px;
+}
+
+
+.review-comment {
+  padding-left: 10px;
+  margin: 0 0 10px 0;
 }
 
 
@@ -337,6 +362,7 @@ nav h1 a {
   bottom: 0;
   position: absolute;
   width: 100%;
+  padding: 25px 0;
 }
 
 /* ====================== Restaurant Main Media Queries ====================== */
