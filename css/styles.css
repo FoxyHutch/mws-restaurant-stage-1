@@ -324,21 +324,25 @@ nav h1 a {
   width: 85%;
 }
 
-.review-name {
+.review-head {
+  width: 100%;
+  height: 40px;
   background-color: #252831;
-  color: white;
-  padding-left: 10px;
   margin: 0 0 10px 0;
-  width: calc(50% - 10px);
+}
+
+.review-name {
+  color: white;
+  font-weight: bold;
+  margin: 0;
+  padding: 10px 0px 10px 10px;
   float: left;
 }
 
 .review-date {
-  padding-left: 10px;
-  margin: 0 0 10px 0;
-  width: calc(50% - 10px);
+  padding: 10px 10px 10px 0px;
+  margin: 0;
   float: right;
-  background-color: #252831;
   color: white;
 }
 
