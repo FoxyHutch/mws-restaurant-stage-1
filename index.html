@@ -11,32 +11,39 @@
 <body>
   <header>
     <nav>
-      <h1><a href="/">Restaurant Reviews</a></h1>
+      <h1>
+        <a href="/">Restaurant Reviews</a>
+      </h1>
     </nav>
   </header>
 
   <main id="maincontent">
-    <section aria-role="application" id="map-container">
-      <div id="map" ></div>
+
+    <section role="application" id="map-container">
+      <div id="map"></div>
     </section>
+
     <section>
       <div class="filter-options">
+
         <h2>Filter Results</h2>
-        
+
         <select aria-haspopup="listbox" aria-label="Select Neighborhoods" id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
           <option value="all">All Neighborhoods</option>
         </select>
-      
+
         <select aria-haspopup="listbox" aria-label="Select Cuisines" id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
           <option value="all">All Cuisines</option>
         </select>
-
+        
       </div>
-      
+
       <div>
         <ul id="restaurants-list"></ul>
       </div>
+
     </section>
+
   </main>
 
   <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
@@ -45,7 +52,10 @@
 
 
   <footer id="footer">
-    Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+    Copyright (c) 2017
+    <a href="/">
+      <strong>Restaurant Reviews</strong>
+    </a> All Rights Reserved.
   </footer>
 
 </body>
