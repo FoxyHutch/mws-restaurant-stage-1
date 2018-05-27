@@ -15,13 +15,39 @@ var rename = require('gulp-rename');
 //Webp
 var webp = require('gulp-webp');
 
+//SASS
+var sass = require('gulp-sass')
 
-gulp.task('default', ['copy-html', 'copy-images' //, 'styles', 'scripts'
-], function() {
-    //gulp.watch('sass/**/*.scss', ['styles']);
+//Autoprefixer
+var autoprefixer = require('gulp-autoprefixer');
+
+//JS-Concat
+var concat = require('gulp-concat');
+
+//For Uglify
+var uglifyjs = require('uglify-es');
+var composer = require('gulp-uglify/composer');
+var uglify = composer(uglifyjs, console);
+
+//Babel
+var babel = require('gulp-babel');
+
+//SourceMaps
+var sourcemaps = require('gulp-sourcemaps');
+
+
+
+gulp.task('default', [
+    'copy-html', 
+    'copy-images-dist', 
+    'copy-styles', 
+    'copy-scripts', 
+    'copy-manifest'], 
+    function() {
+    gulp.watch('sass/**/*.scss', ['styles']);
     gulp.watch('/index.html', ['copy-html']);
     //gulp.watch('./dist/index.html').on('change', browserSync.reload);
-    //gulp.watch('./js/**/*.js', ['scripts']);
+    gulp.watch('./js/**/*.js', ['copy-scripts']);
 
     /*
     browserSync.init({
@@ -37,20 +63,28 @@ gulp.task('copy-html', function(){
         .pipe(gulp.dest('./dist/'));
 })
 
-//Copy Images split in different functions for different cases
-gulp.task('copy-images', function() {
-    gulp.src('./img/*')
-        .pipe(gulp.dest('./dist/img'))
-})
-
 // -- DIST --
 gulp.task('dist', [
     'copy-images-dist',
-    'copy-scripts',
+    'copy-scripts-dist',
+    'copy-sw-dist',
     'copy-html',
     'copy-styles',
     'copy-manifest'
 ])
+
+gulp.task('copy-sw-dist', function() {
+    gulp.src('./sw.js')
+        .pipe(gulp.dest('./dist/'));
+})
+
+
+gulp.task('copy-scripts-dist', function() {
+    gulp.src('./js/**/*.js')
+        .pipe(babel())
+        .pipe(uglify())
+        .pipe(gulp.dest('./dist/js/'));
+})
 
 gulp.task('copy-scripts', function(){
     gulp.src('./js/*')
@@ -59,16 +93,19 @@ gulp.task('copy-scripts', function(){
         .pipe(gulp.dest('./dist/'));
 })
 
-gulp.task('copy-styles', function(){
-    gulp.src('./css/*')
-        .pipe(gulp.dest('./dist/css/'));
-})
+gulp.task('copy-styles', function() {
+    gulp.src('./sass/styles.scss')
+        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions']
+        }))
+        .pipe(gulp.dest('./dist/css'))
+});
 
 gulp.task('copy-manifest', function() {
     gulp.src('./manifest.webmanifest')
         .pipe(gulp.dest('./dist/'))
 })
-
 
 gulp.task('copy-images-dist', [
     'copy-images-large',
