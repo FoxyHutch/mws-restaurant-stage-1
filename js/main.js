@@ -153,11 +153,35 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
 
+  /** TODO: Hier wird ein picture Element eingefügt, dass in die drei Größen
+   * - large (1920)
+   * - medium (800)
+   * - small (480)
+   * unterscheidet
+   */
+
+  //Picture-Container
+  const picture = document.createElement('picture');
+
+  //source
+  const sourceLarge = document.createElement('source');
+  sourceLarge.media = '(min-width: 1000px)';
+  sourceLarge.srcset = DBHelper.imageUrlForRestaurant(restaurant, 'large');
+
+  const sourceMedium = document.createElement('source');
+  sourceMedium.media = '(min-width: 480px)';
+  sourceMedium.srcset = DBHelper.imageUrlForRestaurant(restaurant, 'medium');
+
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.alt = 'Photograph of '+ restaurant.name;
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  li.append(image);
+  image.src = DBHelper.imageUrlForRestaurant(restaurant, 'small');
+
+  picture.append(sourceLarge);
+  picture.append(sourceMedium);
+  picture.append(image);
+
+  li.append(picture);
 
   const name = document.createElement('h2');
   name.innerHTML = restaurant.name;

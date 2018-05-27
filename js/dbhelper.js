@@ -146,13 +146,26 @@ class DBHelper {
   }
 
   /**
-   * Restaurant image URL.
+   * Restaurant image URL .
    */
-  static imageUrlForRestaurant(restaurant) {
+  static imageUrlForRestaurant(restaurant, size) {
     if(restaurant.photograph == null){
       return ('/img/img_placeholder.svg');
     } else {
-    return (`/img/${restaurant.photograph}.jpg`);
+      switch(size) {
+        case 'small':
+          return (`/img/${restaurant.photograph}_small.jpg`);
+          break;
+        case 'medium':
+          return (`/img/${restaurant.photograph}_medium.jpg`);
+          break;
+        case 'large':
+          return (`/img/${restaurant.photograph}_large.jpg`);
+          break;
+        default:
+          return (`/img/${restaurant.photograph}_medium.jpg`);
+          break;
+      }
   }}
 
   /**

@@ -30,7 +30,7 @@ gulp.task('default', ['copy-html', 'copy-images' //, 'styles', 'scripts'
 
 
 gulp.task('copy-html', function(){
-    gulp.src('./index.html')
+    gulp.src('./*.html')
         .pipe(gulp.dest('./dist/'));
 })
 
@@ -44,6 +44,7 @@ gulp.task('copy-images', function() {
 gulp.task('dist', [
     'copy-images-dist',
     'copy-scripts',
+    'copy-html',
     'copy-styles'
 ])
 
