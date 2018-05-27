@@ -12,6 +12,9 @@ var imageresize = require('gulp-image-resize');
 //Rename
 var rename = require('gulp-rename');
 
+//Webp
+var webp = require('gulp-webp');
+
 
 gulp.task('default', ['copy-html', 'copy-images' //, 'styles', 'scripts'
 ], function() {
@@ -45,7 +48,8 @@ gulp.task('dist', [
     'copy-images-dist',
     'copy-scripts',
     'copy-html',
-    'copy-styles'
+    'copy-styles',
+    'copy-manifest'
 ])
 
 gulp.task('copy-scripts', function(){
@@ -60,14 +64,26 @@ gulp.task('copy-styles', function(){
         .pipe(gulp.dest('./dist/css/'));
 })
 
+gulp.task('copy-manifest', function() {
+    gulp.src('./manifest.webmanifest')
+        .pipe(gulp.dest('./dist/'))
+})
+
 
 gulp.task('copy-images-dist', [
     'copy-images-large',
     'copy-images-medium',
     'copy-images-small',
     'copy-images-icon',
-    'copy-images-svg']
+    'copy-images-svg',
+    'transform-webp']
 );
+
+gulp.task('transform-webp', function() {
+    gulp.src('./dist/img/*.jpg')
+        .pipe(webp())
+        .pipe(gulp.dest('./dist/img/'))
+})
 
 gulp.task('copy-images-large', function() {
     gulp.src('./img/image/*')

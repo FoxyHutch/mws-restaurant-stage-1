@@ -156,11 +156,20 @@ class DBHelper {
         case 'small':
           return (`/img/${restaurant.photograph}_small.jpg`);
           break;
+        case 'smallWEBP':
+          return (`/img/${restaurant.photograph}_small.webp`);
+          break;
         case 'medium':
           return (`/img/${restaurant.photograph}_medium.jpg`);
           break;
+        case 'mediumWEBP':
+          return (`/img/${restaurant.photograph}_medium.webp`);
+          break;
         case 'large':
           return (`/img/${restaurant.photograph}_large.jpg`);
+          break;
+        case 'largeWEBP':
+          return (`/img/${restaurant.photograph}_large.webp`);
           break;
         default:
           return (`/img/${restaurant.photograph}_medium.jpg`);

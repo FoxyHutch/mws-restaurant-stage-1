@@ -1,20 +1,26 @@
-const cacheName = 'v18';
+const cacheName = 'v21';
 
-
-self.addEventListener('install', function (event) {
-    console.log('SW: Service Worker installed');
-    event.waitUntil(
-        caches.open(cacheName).then(function (cache) {
-            console.log('SW: Caching Files');
-            return cache.addAll([
-                '/index.html',
-                '/css/styles.css',
-                '/restaurant.html',
-                '/js/dbhelper.js',
-                '/js/main.js',
-                '/js/restaurant_info.js',
-                '/data/restaurants.json'
-                /*'/img/1.jpg',
+var filesToCache = [
+    '.',
+    '/index.html',
+    '/css/styles.css',
+    '/restaurant.html',
+    '/js/dbhelper.js',
+    '/js/main.js',
+    '/js/restaurant_info.js',
+    '/manifest.webmanifest',
+    '/img/1_small.webp',
+    '/img/2_small.webp',
+    '/img/3_small.webp',
+    '/img/4_small.webp',
+    '/img/5_small.webp',
+    '/img/6_small.webp',
+    '/img/7_small.webp',
+    '/img/8_small.webp',
+    '/img/9_small.webp',
+    '/img/10_small.webp'
+    /*'/data/restaurants.json'
+                '/img/1.jpg',
                 '/img/2.jpg',
                 '/img/3.jpg',
                 '/img/4.jpg',
@@ -24,7 +30,17 @@ self.addEventListener('install', function (event) {
                 '/img/8.jpg',
                 '/img/9.jpg',
                 '/img/10.jpg'*/
-            ])
+]
+
+
+
+
+self.addEventListener('install', function (event) {
+    console.log('SW: Service Worker installed');
+    event.waitUntil(
+        caches.open(cacheName).then(function (cache) {
+            console.log('SW: Caching Files');
+            return cache.addAll(filesToCache)
         })
     )
 })
