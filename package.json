@@ -1,0 +1,38 @@
+{
+  "name": "mws-restaurant-stage-1",
+  "version": "1.0.0",
+  "description": "Restaurant Review Website",
+  "main": "./js/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FoxyHutch/mws-restaurant-stage-1.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FoxyHutch/mws-restaurant-stage-1/issues"
+  },
+  "homepage": "https://github.com/FoxyHutch/mws-restaurant-stage-1#readme",
+  "dependencies": {
+    "babel-core": "^6.26.3",
+    "browser-sync": "^2.24.4",
+    "compression": "^1.7.2",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^5.0.0",
+    "gulp-babel": "^7.0.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-image-resize": "^0.13.0",
+    "gulp-imagemin": "^4.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^4.0.1",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-uglify": "^3.0.0",
+    "gulp-webp": "^3.0.0",
+    "imagemin-pngquant": "^5.1.0",
+    "npm": "^6.1.0",
+    "uglify-es": "^3.3.9"
+  }
+}
