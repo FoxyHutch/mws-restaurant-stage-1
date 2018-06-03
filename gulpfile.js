@@ -35,26 +35,35 @@ var babel = require('gulp-babel');
 //SourceMaps
 var sourcemaps = require('gulp-sourcemaps');
 
+//Browsersync
+var browserSync = require('browser-sync').create();
 
+//Compression for GZIP
+var compress = require('compression');
 
 gulp.task('default', [
     'copy-html', 
     'copy-images-dist', 
     'copy-styles', 
     'copy-scripts', 
-    'copy-manifest'], 
+    'copy-manifest',
+    'copy-sw-dist'], 
     function() {
-    gulp.watch('sass/**/*.scss', ['styles']);
-    gulp.watch('/index.html', ['copy-html']);
-    //gulp.watch('./dist/index.html').on('change', browserSync.reload);
+    gulp.watch('sass/**/*.scss', ['copy-styles']);
+    gulp.watch('./dist/css/*.css').on('change', browserSync.reload);
+    gulp.watch('./*.html', ['copy-html']);
+    gulp.watch('./dist/index.html').on('change', browserSync.reload);
     gulp.watch('./js/**/*.js', ['copy-scripts']);
+    gulp.watch('./dist/js/*.js').on('change', browserSync.reload);
 
-    /*
+    
     browserSync.init({
-        server: './dist/',
-        browser: "google chrome"
+        server: {
+            baseDir: './dist/',
+            middleware: [compress()]},
+        browser: "google chrome",
     })
-    */
+    
 });
 
 
