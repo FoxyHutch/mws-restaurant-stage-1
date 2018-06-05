@@ -2,10 +2,11 @@
     "name": "Restaurant Reviews",
     "short_name": "Reviews",
     "start_url": ".",
-    "display": "fullscreen",
+    "display": "standalone",
     "background_color" : "#f3f3f3" ,
     "theme_color": "#f3f3f3",
     "description": "This App helps you find the best food in town.",
+    "orientation": "portrait",
     "icons": [
       {
         "src": "./img/icon48.png",

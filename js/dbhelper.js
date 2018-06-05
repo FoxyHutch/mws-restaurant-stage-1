@@ -12,23 +12,62 @@ class DBHelper {
     return `http://localhost:${port}/restaurants`;
   }
 
+
+  static openDatabase() {
+    // If the browser doesn't support service worker,
+    // there is no need for idb
+    if (!navigator.serviceWorker) {
+      return Promise.resolve();
+    }
+
+    return idb.open('restaurant-db', 1, function (upgradeDb) {
+      var store = upgradeDb.createObjectStore('restaurants', {
+        keyPath: 'id'
+      });
+    });
+
+  }
+
+
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const restaurants = JSON.parse(xhr.responseText);
-        callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
-      }
-    };
-    xhr.send();
-  }
+
+    DBHelper.openDatabase().then(function (db) {
+      if (!db) return;
+
+      let tx = db.transaction('restaurants', 'readwrite');
+      let store = tx.objectStore('restaurants');
+
+      store.getAll().then(function (items) {
+        // Not items in DB
+        if (items.length < 1) {
+
+          let xhr = new XMLHttpRequest();
+          xhr.open('GET', DBHelper.DATABASE_URL);
+          xhr.onload = () => {
+            if (xhr.status === 200) { // Got a success response from server!
+              const restaurants = JSON.parse(xhr.responseText);
+              let tx = db.transaction('restaurants', 'readwrite');
+              let store = tx.objectStore('restaurants');
+              restaurants.forEach(function (restaurant) {
+                store.put(restaurant);
+              });
+              callback(null, restaurants);
+            } else { // Oops!. Got an error from server.
+              const error = (`Request failed. Returned status of ${xhr.status}`);
+              callback(error, null);
+            }
+          }
+          xhr.send();
+
+        } else {
+          callback(null, items);
+        }
+      })
+    })}
+
 
   /**
    * Fetch a restaurant by its ID.
@@ -149,10 +188,10 @@ class DBHelper {
    * Restaurant image URL .
    */
   static imageUrlForRestaurant(restaurant, size) {
-    if(restaurant.photograph == null){
+    if (restaurant.photograph == null) {
       return ('/img/img_placeholder.svg');
     } else {
-      switch(size) {
+      switch (size) {
         case 'small':
           return (`/img/${restaurant.photograph}_small.jpg`);
           break;
@@ -175,7 +214,8 @@ class DBHelper {
           return (`/img/${restaurant.photograph}_medium.jpg`);
           break;
       }
-  }}
+    }
+  }
 
   /**
    * Map marker for a restaurant.
@@ -186,7 +226,8 @@ class DBHelper {
       title: restaurant.name,
       url: DBHelper.urlForRestaurant(restaurant),
       map: map,
-      animation: google.maps.Animation.DROP}
+      animation: google.maps.Animation.DROP
+    }
     );
     return marker;
   }

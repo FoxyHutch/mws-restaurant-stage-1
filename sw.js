@@ -7,6 +7,8 @@ var filesToCache = [
     '/restaurant.html',
     '/js/dbhelper.js',
     '/js/main.js',
+    '/js/idb.js',
+    '/js/picturefill.min.js',
     '/js/restaurant_info.js',
     '/manifest.webmanifest',
     '/img/1_small.webp',
