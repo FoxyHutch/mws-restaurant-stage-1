@@ -55,6 +55,7 @@ gulp.task('default', [
     gulp.watch('./dist/index.html').on('change', browserSync.reload);
     gulp.watch('./js/**/*.js', ['copy-scripts']);
     gulp.watch('./dist/js/*.js').on('change', browserSync.reload);
+    gulp.watch('./sw.js').on('change', browserSync.reload);
 
     
     browserSync.init({
