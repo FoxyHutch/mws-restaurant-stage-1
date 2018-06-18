@@ -33,7 +33,9 @@
     "gulp-webp": "^3.0.0",
     "idb": "^2.1.2",
     "imagemin-pngquant": "^5.1.0",
+    "lozad": "^1.4.0",
     "npm": "^6.1.0",
-    "uglify-es": "^3.3.9"
+    "uglify-es": "^3.3.9",
+    "vanilla-lazyload": "^8.7.1"
   }
 }

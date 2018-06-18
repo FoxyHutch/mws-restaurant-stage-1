@@ -4,6 +4,9 @@ let restaurants,
 var map
 var markers = []
 
+/*Lazyload*/
+var myLazyLoad = new LazyLoad();
+
 
 
 /** 
@@ -26,6 +29,7 @@ if('serviceWorker' in navigator) {
 document.addEventListener('DOMContentLoaded', (event) => {
   fetchNeighborhoods();
   fetchCuisines();
+  myLazyLoad.update();
 });
 
 /**
@@ -145,6 +149,10 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
   });
+
+  /* Lazyload Images*/
+  myLazyLoad.update();
+
   addMarkersToMap();
 }
 
@@ -154,13 +162,6 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
 
-  /** TODO: Hier wird ein picture Element eingefügt, dass in die drei Größen
-   * - large (1920)
-   * - medium (800)
-   * - small (480)
-   * unterscheidet
-   */
-
   //Picture-Container
   const picture = document.createElement('picture');
 
@@ -169,39 +170,40 @@ createRestaurantHTML = (restaurant) => {
   sourceLargeWebP.media = '(min-width: 1000px)';
   sourceLargeWebP.type = 'image/webp';
   sourceLargeWebP.srcset = DBHelper.imageUrlForRestaurant(restaurant, 'largeWEBP');
+  sourceLargeWebP.setAttribute('data-srcset', DBHelper.imageUrlForRestaurant(restaurant, 'largeWEBP'));
 
   //large image
   const sourceLarge = document.createElement('source');
   sourceLarge.media = '(min-width: 1000px)';
-  sourceLarge.srcset = DBHelper.imageUrlForRestaurant(restaurant, 'large');
+  sourceLarge.setAttribute('data-srcset', DBHelper.imageUrlForRestaurant(restaurant, 'large'));
 
   //medium webP
   const sourceMediumWebP = document.createElement('source');
   sourceMediumWebP.media = '(min-width: 481px)';
   sourceMediumWebP.type = 'image/webp';
-  sourceMediumWebP.srcset = DBHelper.imageUrlForRestaurant(restaurant, 'mediumWEBP');
+  sourceMediumWebP.setAttribute('data-srcset', DBHelper.imageUrlForRestaurant(restaurant, 'mediumWEBP'));
 
   //medium image
   const sourceMedium = document.createElement('source');
   sourceMedium.media = '(min-width: 481px)';
-  sourceMedium.srcset = DBHelper.imageUrlForRestaurant(restaurant, 'medium');
+  sourceMedium.setAttribute('data-srcset', DBHelper.imageUrlForRestaurant(restaurant, 'medium'));
 
   //small webP
   const sourceSmallWebP = document.createElement('source');
   sourceSmallWebP.media = '(max-width: 480px)';
   sourceSmallWebP.type = 'image/webp';
-  sourceSmallWebP.srcset = DBHelper.imageUrlForRestaurant(restaurant, 'smallWEBP');
+  sourceSmallWebP.setAttribute('data-srcset', DBHelper.imageUrlForRestaurant(restaurant, 'smallWEBP'));
 
   //small image
   const sourceSmall = document.createElement('source');
   sourceSmall.media = '(max-width: 480px)';
-  sourceSmall.srcset = DBHelper.imageUrlForRestaurant(restaurant, 'small');
+  sourceSmall.setAttribute('data-srcset', DBHelper.imageUrlForRestaurant(restaurant, 'small'));
 
   //fallback image
   const image = document.createElement('img');
-  image.className = 'restaurant-img';
+  image.className = 'restaurant-img lazy';
   image.alt = 'Photograph of '+ restaurant.name;
-  image.src = DBHelper.imageUrlForRestaurant(restaurant, 'small');
+  image.setAttribute('data-src', DBHelper.imageUrlForRestaurant(restaurant, 'medium'));
 
   picture.append(sourceLargeWebP)
   picture.append(sourceLarge);
