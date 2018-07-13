@@ -89,7 +89,38 @@ nav h1 a {
 #map {
   height: 400px;
   width: 100%;
+ background-color: #ccc;
+ position: relative;
+ cursor: pointer;
+}
+
+#map-google {
+  visibility: hidden;;
+}
+
+#show-maps-span {
+  /* Style the button and place it in the middle of the container/image */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  color: grey;
+  font-size: 2.5em;
+}
+
+
+#map-placeholder {
+  height: 400px;
+  width: 100%;
   background-color: #ccc;
+ 
+}
+
+#googlemapsplaceholder {
+  width: 100%;
+  height: 100%;
+  filter: blur(4px);
 }
 
 /* ====================== Restaurant Filtering ====================== */

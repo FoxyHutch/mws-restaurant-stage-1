@@ -41,6 +41,12 @@ var browserSync = require('browser-sync').create();
 //Compression for GZIP
 var compress = require('compression');
 
+//Clean
+var clean = require('gulp-clean');
+
+//Sequencing
+var gulpSequence = require('gulp-sequence');
+
 gulp.task('default', [
     'copy-html', 
     'copy-images-dist', 
@@ -67,6 +73,30 @@ gulp.task('default', [
     
 });
 
+gulp.task('run', function(){
+    browserSync.init({
+        server: {
+            baseDir: './dist/',
+            middleware: [compress()]},
+        browser: "google chrome",
+    })
+})
+
+
+gulp.task('build', gulpSequence(
+    'clean',
+    'copy-html',
+    'copy-styles', 
+    'copy-scripts', 
+    'copy-manifest',
+    'copy-sw-dist',
+    'copy-images-dist',
+))
+
+gulp.task('clean', function(){
+    gulp.src('./dist')
+        .pipe(clean())
+})
 
 gulp.task('copy-html', function(){
     gulp.src('./*.html')
@@ -122,7 +152,7 @@ gulp.task('copy-images-dist', [
     'copy-images-medium',
     'copy-images-small',
     'copy-images-icon',
-    'copy-images-svg',
+    'copy-images-placeholder',
     'transform-webp']
 );
 
@@ -197,8 +227,8 @@ gulp.task('copy-images-icon', function() {
 })
 
 //Copy svg
-gulp.task('copy-images-svg', function() {
-    gulp.src('./img/svg/*')
+gulp.task('copy-images-placeholder', function() {
+    gulp.src('./img/placeholder/*')
         .pipe(gulp.dest('./dist/img'))
 })
 

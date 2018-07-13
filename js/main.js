@@ -29,7 +29,18 @@ if('serviceWorker' in navigator) {
 document.addEventListener('DOMContentLoaded', (event) => {
   fetchNeighborhoods();
   fetchCuisines();
+  updateRestaurants();
   myLazyLoad.update();
+});
+
+/**
+ * Add Accessibility to the Mapplaceholder onclick event via eventlistener for enter.
+ */
+const inp = document.getElementById("map");
+inp.addEventListener("keydown", function (e) {
+    if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
+        replaceMaps();
+    }
 });
 
 /**
@@ -87,10 +98,18 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
   });
 }
 
+
+
+function replaceMaps() {
+  var googlemaps_script = document.createElement('script');
+  googlemaps_script.setAttribute('src','https://maps.googleapis.com/maps/api/js?key=AIzaSyCZy_Xt2lwpvxx-lAtw2jJt3XWswiWNE2I&libraries=places&callback=initMap');
+  document.head.appendChild(googlemaps_script);
+}
+
 /**
  * Initialize Google map, called from HTML.
  */
-window.initMap = () => {
+initMap = () => {
   let loc = {
     lat: 40.722216,
     lng: -73.987501
@@ -100,7 +119,16 @@ window.initMap = () => {
     center: loc,
     scrollwheel: false
   });
-  updateRestaurants();
+
+  // Accessibility: Replace false actions
+  const mapelement = document.getElementById('map');
+  mapelement.style.cursor = '';
+  mapelement.onclick = function () {
+    return false;
+  }
+  mapelement.removeAttribute('role')
+
+  addMarkersToMap();
 }
 
 /**
@@ -153,7 +181,7 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
   /* Lazyload Images*/
   myLazyLoad.update();
 
-  addMarkersToMap();
+  //addMarkersToMap();
 }
 
 /**
