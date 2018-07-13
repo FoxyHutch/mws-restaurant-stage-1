@@ -4,7 +4,10 @@
   "description": "Restaurant Review Website",
   "main": "./js/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "buildtest": "gulp build",
+    "runtest": "gulp run",
+    "rundist": "gulp run",
+    "builddist": "gulp dist"
   },
   "repository": {
     "type": "git",
@@ -17,6 +20,12 @@
   },
   "homepage": "https://github.com/FoxyHutch/mws-restaurant-stage-1#readme",
   "dependencies": {
+    "idb": "^2.1.2",
+    "vanilla-lazyload": "^8.7.1"
+  },
+  "devDependencies": {
+    "gulp-clean": "^0.4.0",
+    "gulp-sequence": "^1.0.0",
     "babel-core": "^6.26.3",
     "browser-sync": "^2.24.4",
     "compression": "^1.7.2",
@@ -31,11 +40,8 @@
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.0",
     "gulp-webp": "^3.0.0",
-    "idb": "^2.1.2",
-    "imagemin-pngquant": "^5.1.0",
-    "lozad": "^1.4.0",
     "npm": "^6.1.0",
     "uglify-es": "^3.3.9",
-    "vanilla-lazyload": "^8.7.1"
+    "imagemin-pngquant": "^5.1.0"
   }
 }

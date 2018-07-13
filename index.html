@@ -26,8 +26,17 @@
   </header>
 
   <main role="main" id="maincontent">
-    <section aria-label="locations" role="application" id="map-container">
-      <div id="map"></div>
+    <section aria-label="locations" id="map-container">
+      <div aria-label="Show Restaurant Locations on GoogleMaps" tabindex="0" role="button" onclick="replaceMaps()" id="map" role="application">
+
+      
+        <img  id="googlemapsplaceholder" src="/img/mapplaceholder.png" alt="GoogleMaps Placeholder">
+        <span id="show-maps-span">Show Maps</span>
+      
+
+        
+
+      </div>
     </section>
 
     <section>
@@ -59,8 +68,6 @@
   <script type="application/javascript" charset="utf-8" src="sw.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/picturefill.min.js"></script>
   
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAefFR1YSzmE_KxzCbk3uWvmu-5dsQ2H6E&libraries=places&callback=initMap"></script>
-
 
   <footer id="footer">
     Copyright (c) 2017

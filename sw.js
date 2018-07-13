@@ -15,7 +15,9 @@ var filesToCache = [
     '/js/idb.js',
     '/js/picturefill.min.js',
     '/js/restaurant_info.js',
-    '/manifest.webmanifest'
+    '/manifest.webmanifest',
+    '/sw.js',
+    '/js/vanillalazyload.min.js'
 ]
 
 
