@@ -28,7 +28,6 @@ class DBHelper {
 
   }
 
-
   /**
    * Fetch all restaurants.
    */
@@ -41,29 +40,59 @@ class DBHelper {
       let store = tx.objectStore('restaurants');
 
       store.getAll().then(function (items) {
-        // Not items in DB
+        // Not items in DB => fetch
         if (items.length < 1) {
 
-          let xhr = new XMLHttpRequest();
-          xhr.open('GET', DBHelper.DATABASE_URL);
-          xhr.onload = () => {
-            if (xhr.status === 200) { // Got a success response from server!
-              const restaurants = JSON.parse(xhr.responseText);
-              let tx = db.transaction('restaurants', 'readwrite');
-              let store = tx.objectStore('restaurants');
-              restaurants.forEach(function (restaurant) {
-                store.put(restaurant);
-              });
-              callback(null, restaurants);
-            } else { // Oops!. Got an error from server.
-              const error = (`Request failed. Returned status of ${xhr.status}`);
+          console.log("1. fetchRestaurants: No items in DB, fetch")
+          //fetch API
+          fetch(DBHelper.DATABASE_URL, {
+            method: 'GET'
+          })
+          .then(response => {
+            if(response.ok) {
+              return response.json()
+            }else{
+              const error = (`Request failed. Returned status of ${response.status}`);
               callback(error, null);
-            }
-          }
-          xhr.send();
+            }})
+          .then(function(response){
+            let tx = db.transaction('restaurants', 'readwrite');
+            let store = tx.objectStore('restaurants');
+            response.forEach(function(restaurant){
+              store.put(restaurant);
+            })
+            return response;
+          })
+          .then(response => callback(null, response))
+          .catch(err => console.log(err))
 
         } else {
+
+          //items in DB => fetch after serving from db
+          
           callback(null, items);
+          console.log("2.1 fetchRestaurants: items in DB, fetch from DB")
+
+          fetch(DBHelper.DATABASE_URL, {
+            method: 'GET'
+          })
+          .then(response => {
+            if(response.ok) {
+              return response.json()
+            }else{
+              const error = (`Request failed. Returned status of ${response.status}`);
+              console.log(error);
+            }})
+          .then(function(response){
+            let tx = db.transaction('restaurants', 'readwrite');
+            let store = tx.objectStore('restaurants');
+            response.forEach(function(restaurant){
+              store.put(restaurant);
+            })
+           
+          })
+          .catch(err => console.log(err))
+          console.log("2.2 fetchRestaurants: update DB")
         }
       })
     })}
