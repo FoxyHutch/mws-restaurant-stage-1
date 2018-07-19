@@ -1,4 +1,5 @@
 let restaurant;
+let reviews;
 var map;
 
 /**
@@ -16,6 +17,14 @@ window.initMap = () => {
       });
       fillBreadcrumb();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+      DBHelper.fetchReviewByRestaurantId(restaurant.id, (error, reviews) =>{
+        if(error) {
+          console.error(error);
+        } else {
+          self.restaurant.reviews = reviews;
+          fillReviewsHTML();
+        } 
+      })   
     }
   });
 }
@@ -44,6 +53,9 @@ fetchRestaurantFromURL = (callback) => {
     });
   }
 }
+
+
+
 
 /**
  * Create restaurant HTML and add it to the webpage
@@ -119,7 +131,7 @@ imgContainer.append(picture);
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  fillReviewsHTML();
+  
 }
 
 /**
@@ -147,10 +159,6 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
  */
 fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
-  const title = document.createElement('h3');
-  title.innerHTML = 'Reviews';
-  container.appendChild(title);
-
   if (!reviews) {
     const noReviews = document.createElement('p');
     noReviews.innerHTML = 'No reviews yet!';
@@ -178,7 +186,10 @@ createReviewHTML = (review) => {
 
   div.className = 'review-head';
 
-  date.innerHTML = review.date;
+  let epocheTime = review.updatedAt;
+  var reviewDate = new Date(epocheTime);
+
+  date.innerHTML = ` ${reviewDate.getDate()}-${reviewDate.getMonth()}-${reviewDate.getFullYear()}`
   date.className = 'review-date'
   
   name.className = 'review-name';

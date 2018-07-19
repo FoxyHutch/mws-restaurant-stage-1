@@ -7,26 +7,41 @@ class DBHelper {
    * Database URL.
    * Change this to restaurants.json file location on your server.
    */
-  static get DATABASE_URL() {
+  static get RESTAURANT_URL() {
     const port = 1337 // Change this to your server port
     return `http://localhost:${port}/restaurants`;
   }
 
-
-  static openDatabase() {
-    // If the browser doesn't support service worker,
-    // there is no need for idb
-    if (!navigator.serviceWorker) {
-      return Promise.resolve();
+   /**
+     * Reviews URL
+     */
+    static get REVIEWS_URL() {
+      const port = 1337 // Change this to your server port
+      return `http://localhost:${port}/reviews`;
     }
 
-    return idb.open('restaurant-db', 1, function (upgradeDb) {
-      var store = upgradeDb.createObjectStore('restaurants', {
-        keyPath: 'id'
-      });
-    });
 
-  }
+    static openDatabase() {
+      // If the browser doesn't support service worker,
+      // there is no need for idb
+      if (!navigator.serviceWorker) {
+        return Promise.resolve();
+      }
+  
+      return idb.open('restaurant-db', 2, function (upgradeDb) {
+        switch (upgradeDb.oldVersion) {
+          case 0:
+            upgradeDb.createObjectStore('restaurants', {
+              keyPath: 'id'
+            });
+          case 1:
+            upgradeDb.createObjectStore('reviews', {
+              keyPath: 'id'
+            });
+        }
+  
+      });
+    }
 
   /**
    * Fetch all restaurants.
@@ -45,7 +60,7 @@ class DBHelper {
 
           console.log("1. fetchRestaurants: No items in DB, fetch")
           //fetch API
-          fetch(DBHelper.DATABASE_URL, {
+          fetch(DBHelper.RESTAURANT_URL, {
             method: 'GET'
           })
           .then(response => {
@@ -73,7 +88,7 @@ class DBHelper {
           callback(null, items);
           console.log("2.1 fetchRestaurants: items in DB, fetch from DB")
 
-          fetch(DBHelper.DATABASE_URL, {
+          fetch(DBHelper.RESTAURANT_URL, {
             method: 'GET'
           })
           .then(response => {
@@ -115,6 +130,23 @@ class DBHelper {
         }
       }
     });
+  }
+
+  static fetchReviewByRestaurantId(restaurantId, callback) {
+    //construct URL
+    const reviewURL = `${DBHelper.REVIEWS_URL}/?restaurant_id=${restaurantId}`
+    fetch(reviewURL ,{
+      method: 'GET'
+    })
+    .then(response => {
+      if(response.ok) {
+        return response.json()
+      }else{
+        const error = (`Request failed. Returned status of ${response.status}`);
+        callback(error, null);
+      }})
+      .then(response => callback(null, response))
+      .catch(err => console.error(err))
   }
 
   /**
