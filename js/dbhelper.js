@@ -12,36 +12,36 @@ class DBHelper {
     return `http://localhost:${port}/restaurants`;
   }
 
-   /**
-     * Reviews URL
-     */
-    static get REVIEWS_URL() {
-      const port = 1337 // Change this to your server port
-      return `http://localhost:${port}/reviews`;
+  /**
+    * Reviews URL
+    */
+  static get REVIEWS_URL() {
+    const port = 1337 // Change this to your server port
+    return `http://localhost:${port}/reviews`;
+  }
+
+
+  static openDatabase() {
+    // If the browser doesn't support service worker,
+    // there is no need for idb
+    if (!navigator.serviceWorker) {
+      return Promise.resolve();
     }
 
-
-    static openDatabase() {
-      // If the browser doesn't support service worker,
-      // there is no need for idb
-      if (!navigator.serviceWorker) {
-        return Promise.resolve();
+    return idb.open('restaurant-db', 2, function (upgradeDb) {
+      switch (upgradeDb.oldVersion) {
+        case 0:
+          upgradeDb.createObjectStore('restaurants', {
+            keyPath: 'id'
+          });
+        case 1:
+          upgradeDb.createObjectStore('reviews', {
+            keyPath: 'id', autoIncrement: true
+          })
       }
-  
-      return idb.open('restaurant-db', 2, function (upgradeDb) {
-        switch (upgradeDb.oldVersion) {
-          case 0:
-            upgradeDb.createObjectStore('restaurants', {
-              keyPath: 'id'
-            });
-          case 1:
-            upgradeDb.createObjectStore('reviews', {
-              keyPath: 'id'
-            });
-        }
-  
-      });
-    }
+
+    });
+  }
 
   /**
    * Fetch all restaurants.
@@ -63,54 +63,57 @@ class DBHelper {
           fetch(DBHelper.RESTAURANT_URL, {
             method: 'GET'
           })
-          .then(response => {
-            if(response.ok) {
-              return response.json()
-            }else{
-              const error = (`Request failed. Returned status of ${response.status}`);
-              callback(error, null);
-            }})
-          .then(function(response){
-            let tx = db.transaction('restaurants', 'readwrite');
-            let store = tx.objectStore('restaurants');
-            response.forEach(function(restaurant){
-              store.put(restaurant);
+            .then(response => {
+              if (response.ok) {
+                return response.json()
+              } else {
+                const error = (`Request failed. Returned status of ${response.status}`);
+                callback(error, null);
+              }
             })
-            return response;
-          })
-          .then(response => callback(null, response))
-          .catch(err => console.log(err))
+            .then(function (response) {
+              let tx = db.transaction('restaurants', 'readwrite');
+              let store = tx.objectStore('restaurants');
+              response.forEach(function (restaurant) {
+                store.put(restaurant);
+              })
+              return response;
+            })
+            .then(response => callback(null, response))
+            .catch(err => console.log(err))
 
         } else {
 
           //items in DB => fetch after serving from db
-          
+
           callback(null, items);
           console.log("2.1 fetchRestaurants: items in DB, fetch from DB")
 
           fetch(DBHelper.RESTAURANT_URL, {
             method: 'GET'
           })
-          .then(response => {
-            if(response.ok) {
-              return response.json()
-            }else{
-              const error = (`Request failed. Returned status of ${response.status}`);
-              console.log(error);
-            }})
-          .then(function(response){
-            let tx = db.transaction('restaurants', 'readwrite');
-            let store = tx.objectStore('restaurants');
-            response.forEach(function(restaurant){
-              store.put(restaurant);
+            .then(response => {
+              if (response.ok) {
+                return response.json()
+              } else {
+                const error = (`Request failed. Returned status of ${response.status}`);
+                console.log(error);
+              }
             })
-           
-          })
-          .catch(err => console.log(err))
+            .then(function (response) {
+              let tx = db.transaction('restaurants', 'readwrite');
+              let store = tx.objectStore('restaurants');
+              response.forEach(function (restaurant) {
+                store.put(restaurant);
+              })
+
+            })
+            .catch(err => console.log(err))
           console.log("2.2 fetchRestaurants: update DB")
         }
       })
-    })}
+    })
+  }
 
 
   /**
@@ -132,22 +135,96 @@ class DBHelper {
     });
   }
 
-  static fetchReviewByRestaurantId(restaurantId, callback) {
-    //construct URL
-    const reviewURL = `${DBHelper.REVIEWS_URL}/?restaurant_id=${restaurantId}`
-    fetch(reviewURL ,{
-      method: 'GET'
+
+  static fetchReviewByRestaurantId(restaurantId) {
+
+    return new Promise(function (resolve, reject) {
+
+      DBHelper.openDatabase().then(function (db) {
+        if (!db) {
+          const err = 'No DB found'
+          reject(err);
+        } else {
+
+          // Check IDB
+          let tx = db.transaction('reviews', 'readwrite');
+          let store = tx.objectStore('reviews');
+    
+          store.getAll()
+            .then(function(items){
+                if(items.length > 1){
+                  // Return items from db
+                  resolve(items)
+                }else{
+                  const reviewURL = `${DBHelper.REVIEWS_URL}/?restaurant_id=${restaurantId}`;
+
+                  fetch(reviewURL, {
+                    method: 'GET'
+                  })
+                    .then(response => {
+                      if (response.ok) {
+                        return response.json()
+                      } else {
+                        const err = (`Request failed. Returned status of ${response.status}`);
+                        reject(err);
+                      }
+                    })
+                    .then(response => {
+                      let tx = db.transaction('reviews', 'readwrite');
+                      let store = tx.objectStore('reviews');
+                      response.forEach(function (review) {
+                        store.put(review);
+                      })
+                      return response;
+                    })
+                    .then(response => resolve(response))
+                    .catch( reject => reject('Error while catching')
+                    )
+                }
+            })
+        }
+      })
     })
-    .then(response => {
-      if(response.ok) {
-        return response.json()
-      }else{
-        const error = (`Request failed. Returned status of ${response.status}`);
-        callback(error, null);
-      }})
-      .then(response => callback(null, response))
-      .catch(err => console.error(err))
   }
+
+
+  static storeRestaurantReview(review) {
+    //Add Review to IDB
+    return new Promise(function (resolve, reject) {
+      DBHelper.openDatabase().then(function (db) {
+        if (!db) {
+          reject('Unable to opeb idb')
+        } else {
+          let tx = db.transaction('reviews', 'readwrite');
+          let store = tx.objectStore('reviews');
+          store.put(review);
+          resolve('Success');
+        }
+      })
+    })
+  }
+
+
+  static test() {
+    DBHelper.openDatabase().then(function (db) {
+      if (!db) {
+        callback('Unable to opeb idb', null)
+      } else {
+        var test = {
+          name: 'nameField.value',
+          rating: 2,
+          comments: 'commentsField.value',
+          restaurant_id: 1,
+          createdAt: 2,
+          updatedAt: 2
+        }
+        let tx = db.transaction('reviews', 'readwrite');
+        let store = tx.objectStore('reviews');
+        store.put(test)
+      }
+    })
+  }
+
 
   /**
    * Fetch restaurants by a cuisine type with proper error handling.

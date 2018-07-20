@@ -53,7 +53,7 @@
     <section id="restaurant-container">
       <h2 id="restaurant-name"></h2>
 
-      <div id="restaurant-img-container"> 
+      <div id="restaurant-img-container">
       </div>
 
       <p id="restaurant-cuisine"></p>
@@ -65,11 +65,34 @@
 
 
     <!-- Beginning reviews -->
-    <section id="reviews-container">
+    <section class="reviews" id="reviews-container">
       <h3>Reviews</h3>
       <ul id="reviews-list"></ul>
     </section>
     <!-- End reviews -->
+
+    <!-- Review-Form -->
+    <section class="reviews" id="review-form-container">
+      <!-- Review-Form -->
+      <h3>Leave a Review</h3>
+      <form id="review-form" method="POST">
+        <span>Name:</span>
+        <br>
+        <input id="nameField" type="text" name="name" required>
+        <br>
+        <span>Rating:</span>
+        <br>
+        <input id="ratingField" type="number" name="rating" min="1" max="5" value="3" pattern="[1-5]" required>
+        <br>
+        <span>Comment:</span>
+        <br>
+        <input id="commentsField" type="text" name="comments" id="" required>
+        <br>
+        <br>
+        <button type="submit" >Submit</button>
+      </form>
+    </section>
+    <button onclick="test()"></button>
 
   </main>
   <!-- End main -->
@@ -93,8 +116,10 @@
   <!-- Other Scripts -->
   <script type="application/javascript" charset="utf-8" src="js/picturefill.min.js"></script>
   <!-- Google Maps -->
+
+  <!--
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAefFR1YSzmE_KxzCbk3uWvmu-5dsQ2H6E&libraries=places&callback=initMap"></script>
-  <!-- End scripts -->
+  --><!-- End scripts -->
 
 </body>
 

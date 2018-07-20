@@ -2,6 +2,68 @@ let restaurant;
 let reviews;
 var map;
 
+
+
+document.addEventListener('DOMContentLoaded', function (event) {
+
+  //test
+  startWithoutMaps();
+
+  const form = document.querySelector('#review-form');
+  const nameField = form.querySelector('#nameField');
+  const ratingField = form.querySelector('#ratingField');
+  const commentsField = form.querySelector('#commentsField');
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault;
+    const restaurant_id = getParameterByName('id');
+    const currentDate = (new Date()).getTime();
+    const review = {
+      name: nameField.value,
+      rating: ratingField.value,
+      comments: commentsField.value,
+      restaurant_id: restaurant_id,
+      createdAt: currentDate,
+      updatedAt: currentDate
+    }
+    DBHelper.storeRestaurantReview(review)
+      .then(function (result) {
+        console.log(result);
+      })
+      .then(function () {
+        window.location.reload(true);
+      })
+      .catch(failureCallback)
+  })
+})
+
+function test() {
+  DBHelper.test();
+}
+
+
+function startWithoutMaps() {
+  fetchRestaurantFromURL((error, restaurant) => {
+    if (error) { // Got an error!
+      console.error(error);
+    } else {
+      fillBreadcrumb();
+      //DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+      DBHelper.fetchReviewByRestaurantId(restaurant.id)
+        .then(function (response) {
+          self.restaurant.reviews = response;
+        })
+        .then(function () {
+          fillReviewsHTML();
+        })
+        .catch(function(error){
+          console.log(error)
+        })
+    }
+  })
+}
+
+
 /**
  * Initialize Google map, called from HTML.
  */
@@ -17,14 +79,14 @@ window.initMap = () => {
       });
       fillBreadcrumb();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
-      DBHelper.fetchReviewByRestaurantId(restaurant.id, (error, reviews) =>{
-        if(error) {
+      DBHelper.fetchReviewByRestaurantId(restaurant.id, (error, reviews) => {
+        if (error)  {
           console.error(error);
         } else {
           self.restaurant.reviews = reviews;
           fillReviewsHTML();
-        } 
-      })   
+        }
+      })
     }
   });
 }
@@ -106,7 +168,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.id = 'restaurant-img'
-  image.alt = 'Photograph of '+ restaurant.name;
+  image.alt = 'Photograph of ' + restaurant.name;
   image.src = DBHelper.imageUrlForRestaurant(restaurant, 'small');
 
 
@@ -118,9 +180,9 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   picture.append(sourceSmall)
   picture.append(image);
 
-const imgContainer = document.getElementById('restaurant-img-container');
+  const imgContainer = document.getElementById('restaurant-img-container');
 
-imgContainer.append(picture);
+  imgContainer.append(picture);
 
 
   const cuisine = document.getElementById('restaurant-cuisine');
@@ -131,7 +193,7 @@ imgContainer.append(picture);
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  
+
 }
 
 /**
@@ -178,11 +240,11 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
 createReviewHTML = (review) => {
 
   const li = document.createElement('li');
-  const div = document.createElement('div'); 
+  const div = document.createElement('div');
   const name = document.createElement('p');
   const date = document.createElement('p');
-  
-  
+
+
 
   div.className = 'review-head';
 
@@ -191,12 +253,12 @@ createReviewHTML = (review) => {
 
   date.innerHTML = ` ${reviewDate.getDate()}-${reviewDate.getMonth()}-${reviewDate.getFullYear()}`
   date.className = 'review-date'
-  
+
   name.className = 'review-name';
   name.innerHTML = review.name;
-  
 
-  
+
+
   li.appendChild(div);
   div.appendChild(name);
   div.appendChild(date);
@@ -217,7 +279,7 @@ createReviewHTML = (review) => {
 /**
  * Add restaurant name to the breadcrumb navigation menu
  */
-fillBreadcrumb = (restaurant=self.restaurant) => {
+fillBreadcrumb = (restaurant = self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
   const a = document.createElement('a');
