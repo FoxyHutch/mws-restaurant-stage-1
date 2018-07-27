@@ -1,5 +1,37 @@
 let restaurant;
+let reviews;
 var map;
+
+
+
+document.addEventListener('DOMContentLoaded', function (event) {
+
+  const form = document.querySelector('#review-form');
+  const nameField = form.querySelector('#nameField');
+  const ratingField = form.querySelector('#ratingField');
+  const commentsField = form.querySelector('#commentsField');
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault;
+    const restaurant_id = getParameterByName('id');
+    const review = {
+      name: nameField.value,
+      rating: ratingField.value,
+      comments: commentsField.value,
+      restaurant_id: restaurant_id
+    }
+    DBHelper.storeTempRestaurantReview(review)
+      .then(function (result) {
+        console.log(result);
+      })
+      .then(function(){
+        navigator.serviceWorker.ready.then(function(swRegistration) {
+          return swRegistration.sync.register('myFirstSync');
+        });
+      })
+      .catch(failureCallback => console.log(failureCallback))
+  })
+})
 
 /**
  * Initialize Google map, called from HTML.
@@ -16,6 +48,16 @@ window.initMap = () => {
       });
       fillBreadcrumb();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
+      DBHelper.fetchReviewByRestaurantId(restaurant.id)
+      .then(function (response) {
+        self.restaurant.reviews = response;
+      })
+      .then(function () {
+        fillReviewsHTML();
+      })
+      .catch(function(error){
+        console.log(error)
+      })
     }
   });
 }
@@ -44,6 +86,9 @@ fetchRestaurantFromURL = (callback) => {
     });
   }
 }
+
+
+
 
 /**
  * Create restaurant HTML and add it to the webpage
@@ -94,7 +139,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.id = 'restaurant-img'
-  image.alt = 'Photograph of '+ restaurant.name;
+  image.alt = 'Photograph of ' + restaurant.name;
   image.src = DBHelper.imageUrlForRestaurant(restaurant, 'small');
 
 
@@ -106,9 +151,9 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   picture.append(sourceSmall)
   picture.append(image);
 
-const imgContainer = document.getElementById('restaurant-img-container');
+  const imgContainer = document.getElementById('restaurant-img-container');
 
-imgContainer.append(picture);
+  imgContainer.append(picture);
 
 
   const cuisine = document.getElementById('restaurant-cuisine');
@@ -118,8 +163,6 @@ imgContainer.append(picture);
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
-  // fill reviews
-  fillReviewsHTML();
 }
 
 /**
@@ -147,10 +190,6 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
  */
 fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
-  const title = document.createElement('h3');
-  title.innerHTML = 'Reviews';
-  container.appendChild(title);
-
   if (!reviews) {
     const noReviews = document.createElement('p');
     noReviews.innerHTML = 'No reviews yet!';
@@ -170,22 +209,25 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
 createReviewHTML = (review) => {
 
   const li = document.createElement('li');
-  const div = document.createElement('div'); 
+  const div = document.createElement('div');
   const name = document.createElement('p');
   const date = document.createElement('p');
-  
-  
+
+
 
   div.className = 'review-head';
 
-  date.innerHTML = review.date;
+  let epocheTime = review.updatedAt;
+  var reviewDate = new Date(epocheTime);
+
+  date.innerHTML = ` ${reviewDate.getDate()}-${reviewDate.getMonth()}-${reviewDate.getFullYear()}`
   date.className = 'review-date'
-  
+
   name.className = 'review-name';
   name.innerHTML = review.name;
-  
 
-  
+
+
   li.appendChild(div);
   div.appendChild(name);
   div.appendChild(date);
@@ -206,7 +248,7 @@ createReviewHTML = (review) => {
 /**
  * Add restaurant name to the breadcrumb navigation menu
  */
-fillBreadcrumb = (restaurant=self.restaurant) => {
+fillBreadcrumb = (restaurant = self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
   const a = document.createElement('a');

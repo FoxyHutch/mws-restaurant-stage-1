@@ -53,7 +53,7 @@
     <section id="restaurant-container">
       <h2 id="restaurant-name"></h2>
 
-      <div id="restaurant-img-container"> 
+      <div id="restaurant-img-container">
       </div>
 
       <p id="restaurant-cuisine"></p>
@@ -65,10 +65,35 @@
 
 
     <!-- Beginning reviews -->
-    <section id="reviews-container">
+    <section class="reviews" id="reviews-container">
+      <h3>Reviews</h3>
       <ul id="reviews-list"></ul>
     </section>
     <!-- End reviews -->
+
+    <!-- Review-Form -->
+    <section class="reviews" id="review-form-container">
+      <!-- Review-Form -->
+      <h3>Leave a Review</h3>
+
+      <form id="review-form" method="POST">
+        <div class="form-row">
+          <label for="nameField" class="form-label">Name:</label>
+          <input class="form-input" id="nameField" type="text" name="name" required>
+        </div>
+        <div class="form-row">
+            <label for="ratingField" class="form-label">Rating:</label>
+            <input class="form-input" id="ratingField" type="number" name="rating" min="1" max="5" value="3" pattern="[1-5]" required>
+        </div>
+        <div class="form-row" id="form-comments-container">
+            <label for="commentsField" class="form-label">Comment:</label>
+            <textarea class="form-input" id="commentsField" type="text" name="comments" required></textarea>
+        </div>
+        <div>
+            <button id="submitButton" type="submit">Submit</button>
+        </div>
+      </form>
+    </section>
 
   </main>
   <!-- End main -->
