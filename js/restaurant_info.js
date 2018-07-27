@@ -6,9 +6,6 @@ var map;
 
 document.addEventListener('DOMContentLoaded', function (event) {
 
-  //test
-  startWithoutMaps();
-
   const form = document.querySelector('#review-form');
   const nameField = form.querySelector('#nameField');
   const ratingField = form.querySelector('#ratingField');
@@ -17,52 +14,24 @@ document.addEventListener('DOMContentLoaded', function (event) {
   form.addEventListener('submit', function (event) {
     event.preventDefault;
     const restaurant_id = getParameterByName('id');
-    const currentDate = (new Date()).getTime();
     const review = {
       name: nameField.value,
       rating: ratingField.value,
       comments: commentsField.value,
-      restaurant_id: restaurant_id,
-      createdAt: currentDate,
-      updatedAt: currentDate
+      restaurant_id: restaurant_id
     }
-    DBHelper.storeRestaurantReview(review)
+    DBHelper.storeTempRestaurantReview(review)
       .then(function (result) {
         console.log(result);
       })
-      .then(function () {
-        window.location.reload(true);
+      .then(function(){
+        navigator.serviceWorker.ready.then(function(swRegistration) {
+          return swRegistration.sync.register('myFirstSync');
+        });
       })
-      .catch(failureCallback)
+      .catch(failureCallback => console.log(failureCallback))
   })
 })
-
-function test() {
-  DBHelper.test();
-}
-
-
-function startWithoutMaps() {
-  fetchRestaurantFromURL((error, restaurant) => {
-    if (error) { // Got an error!
-      console.error(error);
-    } else {
-      fillBreadcrumb();
-      //DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
-      DBHelper.fetchReviewByRestaurantId(restaurant.id)
-        .then(function (response) {
-          self.restaurant.reviews = response;
-        })
-        .then(function () {
-          fillReviewsHTML();
-        })
-        .catch(function(error){
-          console.log(error)
-        })
-    }
-  })
-}
-
 
 /**
  * Initialize Google map, called from HTML.
@@ -79,13 +48,15 @@ window.initMap = () => {
       });
       fillBreadcrumb();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
-      DBHelper.fetchReviewByRestaurantId(restaurant.id, (error, reviews) => {
-        if (error)  {
-          console.error(error);
-        } else {
-          self.restaurant.reviews = reviews;
-          fillReviewsHTML();
-        }
+      DBHelper.fetchReviewByRestaurantId(restaurant.id)
+      .then(function (response) {
+        self.restaurant.reviews = response;
+      })
+      .then(function () {
+        fillReviewsHTML();
+      })
+      .catch(function(error){
+        console.log(error)
       })
     }
   });
@@ -192,8 +163,6 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
-  // fill reviews
-
 }
 
 /**

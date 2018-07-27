@@ -20,15 +20,8 @@ class DBHelper {
     return `http://localhost:${port}/reviews`;
   }
 
-
-  static openDatabase() {
-    // If the browser doesn't support service worker,
-    // there is no need for idb
-    if (!navigator.serviceWorker) {
-      return Promise.resolve();
-    }
-
-    return idb.open('restaurant-db', 2, function (upgradeDb) {
+  static databaseSetup() {
+    return idb.open('restaurant-db', 3, function (upgradeDb) {
       switch (upgradeDb.oldVersion) {
         case 0:
           upgradeDb.createObjectStore('restaurants', {
@@ -37,11 +30,27 @@ class DBHelper {
         case 1:
           upgradeDb.createObjectStore('reviews', {
             keyPath: 'id', autoIncrement: true
+          });
+        case 2:
+          upgradeDb.createObjectStore('tempreviews', {
+            keyPath: 'id', autoIncrement: true
           })
       }
 
     });
   }
+
+
+  static openDatabase() {
+    // If the browser doesn't support service worker,
+    // there is no need for idb
+    if (!navigator.serviceWorker) {
+      return Promise.resolve();
+    }
+
+    return DBHelper.databaseSetup();
+  }
+
 
   /**
    * Fetch all restaurants.
@@ -136,10 +145,54 @@ class DBHelper {
   }
 
 
-  static fetchReviewByRestaurantId(restaurantId) {
 
+  static fetchReviewsForDBSync() {
     return new Promise(function (resolve, reject) {
+      // open DB without openDatabase function because of problems with direct calls from serviceWorker
+      DBHelper.databaseSetup()
+        .then(function (db) {
+          if (!db) {
+            const err = 'No DB found'
+            reject(err);
+          } else {
+            let tx = db.transaction('tempreviews', 'readwrite');
+            let store = tx.objectStore('tempreviews');
+            return store.getAll();
+          }
+        })
+        .then(function(reviews){
+          resolve(reviews);
+        })
+    }
+    )
+  }
 
+  static deleteReviewAfterPOST(review_id) {
+    return new Promise(function (resolve, reject) {
+      // open DB without openDatabase function because of problems with direct calls from serviceWorker
+      DBHelper.databaseSetup()
+        .then(function (db) {
+          if (!db) {
+            const err = 'No DB found'
+            reject(err);
+          } else {
+
+            // Check IDB
+            let tx = db.transaction('tempreviews', 'readwrite');
+            let store = tx.objectStore('tempreviews');
+
+            store.delete(review_id);
+          }
+        }).then(function () {
+          resolve('Successfully Deleted')
+        })
+    })
+  }
+
+
+  // Fetch and store to given restaurantID
+  static fetchReviewByRestaurantId(restaurantId) {
+    return new Promise(function (resolve, reject) {
       DBHelper.openDatabase().then(function (db) {
         if (!db) {
           const err = 'No DB found'
@@ -149,38 +202,43 @@ class DBHelper {
           // Check IDB
           let tx = db.transaction('reviews', 'readwrite');
           let store = tx.objectStore('reviews');
-    
-          store.getAll()
-            .then(function(items){
-                if(items.length > 1){
-                  // Return items from db
-                  resolve(items)
-                }else{
-                  const reviewURL = `${DBHelper.REVIEWS_URL}/?restaurant_id=${restaurantId}`;
 
-                  fetch(reviewURL, {
-                    method: 'GET'
+          store.getAll()
+            .then(function (items) {
+              let reviews = items.filter(item => item.restaurant_id == restaurantId)
+              if (reviews.length > 1) {
+                // Return items from db and fetch afterwards
+
+                // Return items with given restaurant ID
+                //resolve(items)
+                resolve(reviews)
+              }
+
+              const reviewURL = `${DBHelper.REVIEWS_URL}/?restaurant_id=${restaurantId}`;
+
+              fetch(reviewURL, {
+                method: 'GET'
+              })
+                .then(response => {
+                  if (response.ok) {
+                    return response.json()
+                  } else {
+                    const err = (`Request failed. Returned status of ${response.status}`);
+                    reject(err);
+                  }
+                })
+                .then(response => {
+                  let tx = db.transaction('reviews', 'readwrite');
+                  let store = tx.objectStore('reviews');
+                  response.forEach(function (review) {
+                    store.put(review);
                   })
-                    .then(response => {
-                      if (response.ok) {
-                        return response.json()
-                      } else {
-                        const err = (`Request failed. Returned status of ${response.status}`);
-                        reject(err);
-                      }
-                    })
-                    .then(response => {
-                      let tx = db.transaction('reviews', 'readwrite');
-                      let store = tx.objectStore('reviews');
-                      response.forEach(function (review) {
-                        store.put(review);
-                      })
-                      return response;
-                    })
-                    .then(response => resolve(response))
-                    .catch( reject => reject('Error while catching')
-                    )
-                }
+                  return response;
+                })
+                .then(response => resolve(response))
+                .catch(reject => reject('Error while catching')
+                )
+
             })
         }
       })
@@ -188,43 +246,21 @@ class DBHelper {
   }
 
 
-  static storeRestaurantReview(review) {
+  static storeTempRestaurantReview(review) {
     //Add Review to IDB
     return new Promise(function (resolve, reject) {
       DBHelper.openDatabase().then(function (db) {
         if (!db) {
           reject('Unable to opeb idb')
         } else {
-          let tx = db.transaction('reviews', 'readwrite');
-          let store = tx.objectStore('reviews');
+          let tx = db.transaction('tempreviews', 'readwrite');
+          let store = tx.objectStore('tempreviews');
           store.put(review);
-          resolve('Success');
+          resolve('Stored Successfully');
         }
       })
     })
   }
-
-
-  static test() {
-    DBHelper.openDatabase().then(function (db) {
-      if (!db) {
-        callback('Unable to opeb idb', null)
-      } else {
-        var test = {
-          name: 'nameField.value',
-          rating: 2,
-          comments: 'commentsField.value',
-          restaurant_id: 1,
-          createdAt: 2,
-          updatedAt: 2
-        }
-        let tx = db.transaction('reviews', 'readwrite');
-        let store = tx.objectStore('reviews');
-        store.put(test)
-      }
-    })
-  }
-
 
   /**
    * Fetch restaurants by a cuisine type with proper error handling.

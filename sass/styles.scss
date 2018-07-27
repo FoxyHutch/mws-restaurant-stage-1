@@ -335,9 +335,9 @@ nav h1 a {
 
 
 /* Restaurant Reviews */
-
 #restaurant-container, 
-#reviews-container {
+#reviews-container,
+#review-form-container {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
   padding: 30px 0 65px;
@@ -407,6 +407,54 @@ nav h1 a {
 }
 
 /* ====================== Restaurant Details Review-Form ====================== */
+#review-form {
+  background-color: #fff;
+  border-radius: 5px;
+  display: block;
+  margin: 30px auto;
+  overflow: hidden;
+  position: relative;
+  padding: 1em;
+  width: 85%;
+  border: 1px solid #CCC;
+}
+
+.form-row {
+  width: 100%;
+  margin: 0 0 10px 0;
+}
+
+.form-label {
+  font-weight: bold;
+  padding: 10px 0 10px 0px; 
+  margin: 0;
+  display: inline-block;
+  width: 20%;
+  text-align: right;
+}
+
+#commentsField{
+  vertical-align: top;
+  height: 5em;
+}
+
+.form-input{
+     font: 1em sans-serif;
+     width: 75%;
+     box-sizing: border-box;
+   
+     /* To harmonize the look & feel of text field border */
+     border: 1px solid #999;
+}
+
+#submitButton {
+  margin-left: 20%;
+  width: 70px;
+  text-align: center;
+  border: 2px solid grey;
+  float: right;
+}
+
 
 
 
@@ -470,7 +518,8 @@ nav h1 a {
   }
 
   #restaurant-container,
-  #reviews-container {
+  #reviews-container,
+  #review-form-container {
     border-bottom: 1px solid #d9d9d9;
     border-top: 1px solid #fff;
     padding: 30px 0px;
