@@ -160,7 +160,7 @@ class DBHelper {
             return store.getAll();
           }
         })
-        .then(function(reviews){
+        .then(function (reviews) {
           resolve(reviews);
         })
     }
@@ -242,6 +242,27 @@ class DBHelper {
             })
         }
       })
+    })
+  }
+
+  static changeRestaurantFavorite(restaurant) {
+    return new Promise(function (resolve, reject) {
+      //TODO: Boolean abfangen da dieser auch ein String sein kann
+
+      const favoriteURL = `${DBHelper.RESTAURANT_URL}/${restaurant.id}/?is_favorite=${!restaurant.is_favorite}`
+
+      fetch(favoriteURL, {
+        method: 'PUT'
+      })
+        .then(response => {
+          if (response.ok) {
+            resolve(!restaurant.is_favorite);
+          } else {
+            const err = (`Request failed. Returned status of ${response.status}`);
+            reject(err);
+          }
+        })
+        .catch(reject => reject('Error while fetching'));
     })
   }
 

@@ -62,6 +62,25 @@ window.initMap = () => {
   });
 }
 
+function addFavorite(){
+  fetchRestaurantFromURL((error, restaurant) => {
+    if(error){
+      console.error(error);
+    } else {
+      DBHelper.changeRestaurantFavorite(restaurant)
+        .then(newStatus =>{
+          console.log('Neuer Status: ' + newStatus + ', Alter Status: ' + restaurant.is_favorite);
+        })
+        .catch(err => console.error(err));
+    }
+  })
+  //Fetch Put to favorites
+  //Then change img-element and alt-tag
+  //Catch: If server not reachable dont change img and alt-tag
+
+  //Add the img in button dynamically while loading website
+}
+
 /**
  * Get current restaurant from page URL.
  */
