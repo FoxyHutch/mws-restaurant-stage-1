@@ -14,12 +14,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
   form.addEventListener('submit', function (event) {
     event.preventDefault;
     const restaurant_id = getParameterByName('id');
+    const currDate = new Date();
     const review = {
       name: nameField.value,
       rating: ratingField.value,
       comments: commentsField.value,
       restaurant_id: restaurant_id,
-      createdAt: Date.now()
+      createdAt: currDate.getTime()
     }
     DBHelper.storeTempRestaurantReview(review)
       .then(function (result) {
@@ -70,18 +71,12 @@ function addFavorite(){
     } else {
       DBHelper.changeRestaurantFavorite(restaurant)
         .then(function(newStatus){
-          console.log('Neuer Status: ' + newStatus + ', Alter Status: ' + restaurant.is_favorite);
           let favoriteImg = document.getElementById('addFavorite-img');
           favoriteImg.src = (newStatus?'img/favorite-enabled.svg':'img/favorite-disabled.svg')
         })
         .catch(err => console.error(err));
     }
   })
-  //Fetch Put to favorites
-  //Then change img-element and alt-tag
-  //Catch: If server not reachable dont change img and alt-tag
-
-  //Add the img in button dynamically while loading website
 }
 
 /**

@@ -290,8 +290,15 @@ class DBHelper {
   static changeRestaurantFavorite(restaurant) {
     return new Promise(function (resolve, reject) {
 
-      const newIsFavorite = !(restaurant.is_favorite == 'true');
-      const favoriteURL = `${DBHelper.RESTAURANT_URL}/${restaurant.id}/?is_favorite=${newIsFavorite}`
+      let isFavoriteBool;
+      //Double check type of is_favorite
+      if(typeof restaurant.is_favorite == 'boolean'){
+        isFavoriteBool = !(restaurant.is_favorite);
+      } else {
+        isFavoriteBool = !(restaurant.is_favorite == 'true');
+      }
+
+      const favoriteURL = `${DBHelper.RESTAURANT_URL}/${restaurant.id}/?is_favorite=${isFavoriteBool}`
 
       //Put in DB
       DBHelper.openDatabase()
@@ -302,7 +309,7 @@ class DBHelper {
           } else {
             // prepare restaurant obj
             const updatedRestaurant = restaurant;
-            updatedRestaurant.is_favorite = newIsFavorite;
+            updatedRestaurant.is_favorite = isFavoriteBool;
             let tx = db.transaction('restaurants', 'readwrite');
             let store = tx.objectStore('restaurants');
             store.put(updatedRestaurant);
@@ -314,7 +321,7 @@ class DBHelper {
       })
         .then(response => {
           if (response.ok) {
-            resolve(newIsFavorite);
+            resolve(isFavoriteBool);
           } else {
             const err = (`Request failed. Returned status of ${response.status}`);
             reject(err);
