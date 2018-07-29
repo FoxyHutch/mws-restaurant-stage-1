@@ -81,8 +81,10 @@ self.addEventListener('sync', function (event) {
                             } else {
                                 console.log(response.status);
                             }
-
-                        }).then(response => console.log(response));
+                        }).then(function(response){
+                            console.log(response)
+                            return DBHelper.updateReviews(review.restaurant_id);
+                        }).then(response => console.log(response))
                     }))
                 })
                 .catch(function (err) {

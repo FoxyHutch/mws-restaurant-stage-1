@@ -18,7 +18,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
       name: nameField.value,
       rating: ratingField.value,
       comments: commentsField.value,
-      restaurant_id: restaurant_id
+      restaurant_id: restaurant_id,
+      createdAt: Date.now()
     }
     DBHelper.storeTempRestaurantReview(review)
       .then(function (result) {
@@ -70,7 +71,7 @@ function addFavorite(){
       DBHelper.changeRestaurantFavorite(restaurant)
         .then(function(newStatus){
           console.log('Neuer Status: ' + newStatus + ', Alter Status: ' + restaurant.is_favorite);
-          const favoriteImg = document.getElementById('addFavorite-img');
+          let favoriteImg = document.getElementById('addFavorite-img');
           favoriteImg.src = (newStatus?'img/favorite-enabled.svg':'img/favorite-disabled.svg')
         })
         .catch(err => console.error(err));
@@ -189,10 +190,15 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 }
 
 fillRestaurantFavoriteHTML = (isFavorite = self.restaurant.is_favorite) => {
-  const favoriteButton = document.getElementById('addFavorite-button');
-
+  let favoriteButton = document.getElementById('addFavorite-button');
+  let isFavoriteBool
   //Double check type of is_favorite
-  const isFavoriteBool = (isFavorite == 'true');
+  if(typeof isFavorite == 'boolean'){
+    isFavoriteBool = isFavorite;
+  } else {
+    isFavoriteBool = (isFavorite == 'true');
+  }
+  
 
   //Add Img
   const favoriteButtonImg = document.createElement('img');
