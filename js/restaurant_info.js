@@ -68,8 +68,10 @@ function addFavorite(){
       console.error(error);
     } else {
       DBHelper.changeRestaurantFavorite(restaurant)
-        .then(newStatus =>{
+        .then(function(newStatus){
           console.log('Neuer Status: ' + newStatus + ', Alter Status: ' + restaurant.is_favorite);
+          const favoriteImg = document.getElementById('addFavorite-img');
+          favoriteImg.src = (newStatus?'img/favorite-enabled.svg':'img/favorite-disabled.svg')
         })
         .catch(err => console.error(err));
     }
@@ -182,7 +184,33 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
+
+  fillRestaurantFavoriteHTML();
 }
+
+fillRestaurantFavoriteHTML = (isFavorite = self.restaurant.is_favorite) => {
+  const favoriteButton = document.getElementById('addFavorite-button');
+
+  //Double check type of is_favorite
+  const isFavoriteBool = (isFavorite == 'true');
+
+  //Add Img
+  const favoriteButtonImg = document.createElement('img');
+  favoriteButtonImg.src = (isFavoriteBool?'img/favorite-enabled.svg':'img/favorite-disabled.svg');
+  favoriteButtonImg.alt = (isFavoriteBool?'Is Favorite':'Is Not Favorite');
+  favoriteButtonImg.id = 'addFavorite-img';
+
+  //Add Text
+  const favoriteButtonSpan = document.createElement('span');
+  favoriteButtonSpan.innerText = (isFavoriteBool?'Remove from Favorites':'Add to Favorites');
+  favoriteButtonSpan.id = 'addFavorite-text';
+  
+  favoriteButton.appendChild(favoriteButtonImg);
+  favoriteButton.appendChild(favoriteButtonSpan);
+
+}
+
+
 
 /**
  * Create restaurant operating hours HTML table and add it to the webpage.

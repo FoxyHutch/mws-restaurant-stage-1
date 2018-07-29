@@ -199,7 +199,6 @@ class DBHelper {
           reject(err);
         } else {
 
-          // Check IDB
           let tx = db.transaction('reviews', 'readwrite');
           let store = tx.objectStore('reviews');
 
@@ -247,16 +246,16 @@ class DBHelper {
 
   static changeRestaurantFavorite(restaurant) {
     return new Promise(function (resolve, reject) {
-      //TODO: Boolean abfangen da dieser auch ein String sein kann
 
-      const favoriteURL = `${DBHelper.RESTAURANT_URL}/${restaurant.id}/?is_favorite=${!restaurant.is_favorite}`
+      const newIsFavorite = !(restaurant.is_favorite == 'true');
+      const favoriteURL = `${DBHelper.RESTAURANT_URL}/${restaurant.id}/?is_favorite=${newIsFavorite}`
 
       fetch(favoriteURL, {
         method: 'PUT'
       })
         .then(response => {
           if (response.ok) {
-            resolve(!restaurant.is_favorite);
+            resolve(newIsFavorite);
           } else {
             const err = (`Request failed. Returned status of ${response.status}`);
             reject(err);
