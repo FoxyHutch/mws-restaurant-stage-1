@@ -59,6 +59,10 @@
       <p id="restaurant-cuisine"></p>
       <p id="restaurant-address"></p>
       <table id="restaurant-hours"></table>
+      <div id="addFavorite-container">
+        <button id="addFavorite-button" onclick="addFavorite()">
+        </button>
+      </div>
     </section>
     <!-- end restaurant -->
 
@@ -82,15 +86,15 @@
           <input class="form-input" id="nameField" type="text" name="name" required>
         </div>
         <div class="form-row">
-            <label for="ratingField" class="form-label">Rating:</label>
-            <input class="form-input" id="ratingField" type="number" name="rating" min="1" max="5" value="3" pattern="[1-5]" required>
+          <label for="ratingField" class="form-label">Rating:</label>
+          <input class="form-input" id="ratingField" type="number" name="rating" min="1" max="5" value="3" pattern="[1-5]" required>
         </div>
         <div class="form-row" id="form-comments-container">
-            <label for="commentsField" class="form-label">Comment:</label>
-            <textarea class="form-input" id="commentsField" type="text" name="comments" required></textarea>
+          <label for="commentsField" class="form-label">Comment:</label>
+          <textarea class="form-input" id="commentsField" type="text" name="comments" required></textarea>
         </div>
         <div>
-            <button id="submitButton" type="submit">Submit</button>
+          <button id="submitButton" type="submit">Submit</button>
         </div>
       </form>
     </section>

@@ -146,6 +146,45 @@ class DBHelper {
 
 
 
+  static updateReviews(restaurantID) {
+    return new Promise(function (resolve, reject) {
+
+      DBHelper.databaseSetup()
+        .then(function (db) {
+          if (!db) {
+            const err = 'No DB found'
+            reject(err);
+          } else {
+            const reviewURL = `${DBHelper.REVIEWS_URL}/?restaurant_id=${restaurantID}`;
+
+            fetch(reviewURL, {
+              method: 'GET'
+            })
+              .then(response => {
+                if (response.ok) {
+                  return response.json();
+                } else {
+                  const err = (`Request failed. Returned status of ${response.status}`);
+                  reject(err);
+                }
+              })
+              .then(function (response) {
+
+                // Check IDB
+                let tx = db.transaction('reviews', 'readwrite');
+                let store = tx.objectStore('reviews');
+                response.forEach(function (item) {
+                  store.put(item);
+                })
+                return response;
+              })
+          }
+        })
+    })
+  }
+
+
+
   static fetchReviewsForDBSync() {
     return new Promise(function (resolve, reject) {
       // open DB without openDatabase function because of problems with direct calls from serviceWorker
@@ -160,7 +199,7 @@ class DBHelper {
             return store.getAll();
           }
         })
-        .then(function(reviews){
+        .then(function (reviews) {
           resolve(reviews);
         })
     }
@@ -199,49 +238,96 @@ class DBHelper {
           reject(err);
         } else {
 
-          // Check IDB
           let tx = db.transaction('reviews', 'readwrite');
           let store = tx.objectStore('reviews');
 
           store.getAll()
+            .then(function (reviews_stored) {
+              // In case of no connection display temporary stored Reviews
+              let temptx = db.transaction('tempreviews', 'readwrite');
+              let tempstore = temptx.objectStore('tempreviews');
+
+              return tempstore.getAll()
+                .then(function(reviews_temp){
+                  reviews_stored.push(...reviews_temp);
+                  return reviews_stored;
+                })
             .then(function (items) {
               let reviews = items.filter(item => item.restaurant_id == restaurantId)
               if (reviews.length > 1) {
-                // Return items from db and fetch afterwards
-
-                // Return items with given restaurant ID
-                //resolve(items)
                 resolve(reviews)
-              }
+              } else {
 
-              const reviewURL = `${DBHelper.REVIEWS_URL}/?restaurant_id=${restaurantId}`;
-
-              fetch(reviewURL, {
-                method: 'GET'
-              })
-                .then(response => {
-                  if (response.ok) {
-                    return response.json()
-                  } else {
-                    const err = (`Request failed. Returned status of ${response.status}`);
-                    reject(err);
-                  }
+                const reviewURL = `${DBHelper.REVIEWS_URL}/?restaurant_id=${restaurantId}`;
+                fetch(reviewURL, {
+                  method: 'GET'
                 })
-                .then(response => {
-                  let tx = db.transaction('reviews', 'readwrite');
-                  let store = tx.objectStore('reviews');
-                  response.forEach(function (review) {
-                    store.put(review);
+                  .then(response => {
+                    if (response.ok) {
+                      return response.json()
+                    } else {
+                      const err = (`Request failed. Returned status of ${response.status}`);
+                      reject(err);
+                    }
                   })
-                  return response;
-                })
-                .then(response => resolve(response))
-                .catch(reject => reject('Error while catching')
-                )
+                  .then(response => {
+                    let tx = db.transaction('reviews', 'readwrite');
+                    let store = tx.objectStore('reviews');
+                    response.forEach(function (review) {
+                      store.put(review);
+                    })
+                    return response;
+                  })
+                  .then(response => resolve(response))
+                  .catch(reject => reject('Error while catching'))
 
-            })
-        }
+              }})
+        })
+      }})
+    })
+  }
+
+  static changeRestaurantFavorite(restaurant) {
+    return new Promise(function (resolve, reject) {
+
+      let isFavoriteBool;
+      //Double check type of is_favorite
+      if(typeof restaurant.is_favorite == 'boolean'){
+        isFavoriteBool = !(restaurant.is_favorite);
+      } else {
+        isFavoriteBool = !(restaurant.is_favorite == 'true');
+      }
+
+      const favoriteURL = `${DBHelper.RESTAURANT_URL}/${restaurant.id}/?is_favorite=${isFavoriteBool}`
+
+      //Put in DB
+      DBHelper.openDatabase()
+        .then(db => {
+          if (!db) {
+            const err = 'No DB found'
+            reject(err);
+          } else {
+            // prepare restaurant obj
+            const updatedRestaurant = restaurant;
+            updatedRestaurant.is_favorite = isFavoriteBool;
+            let tx = db.transaction('restaurants', 'readwrite');
+            let store = tx.objectStore('restaurants');
+            store.put(updatedRestaurant);
+          }
+        })
+
+      fetch(favoriteURL, {
+        method: 'PUT'
       })
+        .then(response => {
+          if (response.ok) {
+            resolve(isFavoriteBool);
+          } else {
+            const err = (`Request failed. Returned status of ${response.status}`);
+            reject(err);
+          }
+        })
+        .catch(reject => reject('Error while fetching'));
     })
   }
 

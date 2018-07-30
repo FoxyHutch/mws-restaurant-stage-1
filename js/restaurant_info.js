@@ -14,11 +14,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
   form.addEventListener('submit', function (event) {
     event.preventDefault;
     const restaurant_id = getParameterByName('id');
+    const currDate = new Date();
     const review = {
       name: nameField.value,
       rating: ratingField.value,
       comments: commentsField.value,
-      restaurant_id: restaurant_id
+      restaurant_id: restaurant_id,
+      createdAt: currDate.getTime()
     }
     DBHelper.storeTempRestaurantReview(review)
       .then(function (result) {
@@ -60,6 +62,21 @@ window.initMap = () => {
       })
     }
   });
+}
+
+function addFavorite(){
+  fetchRestaurantFromURL((error, restaurant) => {
+    if(error){
+      console.error(error);
+    } else {
+      DBHelper.changeRestaurantFavorite(restaurant)
+        .then(function(newStatus){
+          let favoriteImg = document.getElementById('addFavorite-img');
+          favoriteImg.src = (newStatus?'img/favorite-enabled.svg':'img/favorite-disabled.svg')
+        })
+        .catch(err => console.error(err));
+    }
+  })
 }
 
 /**
@@ -163,7 +180,38 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
+
+  fillRestaurantFavoriteHTML();
 }
+
+fillRestaurantFavoriteHTML = (isFavorite = self.restaurant.is_favorite) => {
+  let favoriteButton = document.getElementById('addFavorite-button');
+  let isFavoriteBool
+  //Double check type of is_favorite
+  if(typeof isFavorite == 'boolean'){
+    isFavoriteBool = isFavorite;
+  } else {
+    isFavoriteBool = (isFavorite == 'true');
+  }
+  
+  favoriteButton.setAttribute('aria-checked', isFavoriteBool);
+  //Add Img
+  const favoriteButtonImg = document.createElement('img');
+  favoriteButtonImg.src = (isFavoriteBool?'img/favorite-enabled.svg':'img/favorite-disabled.svg');
+  favoriteButtonImg.alt = ('Favorite Icon')
+  favoriteButtonImg.id = 'addFavorite-img';
+
+  //Add Text
+  const favoriteButtonSpan = document.createElement('span');
+  favoriteButtonSpan.innerText = (isFavoriteBool?'Remove from Favorites':'Add to Favorites');
+  favoriteButtonSpan.id = 'addFavorite-text';
+  
+  favoriteButton.appendChild(favoriteButtonImg);
+  favoriteButton.appendChild(favoriteButtonSpan);
+
+}
+
+
 
 /**
  * Create restaurant operating hours HTML table and add it to the webpage.
