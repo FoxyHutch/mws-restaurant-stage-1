@@ -20,6 +20,7 @@ class DBHelper {
     return `http://localhost:${port}/reviews`;
   }
 
+
   static databaseSetup() {
     return idb.open('restaurant-db', 3, function (upgradeDb) {
       switch (upgradeDb.oldVersion) {
@@ -145,7 +146,12 @@ class DBHelper {
   }
 
 
-
+/**
+ * Fetches all Reviews from Endpoint and stores them
+ * in IDB
+ * 
+ * @param restaurantID 
+ */
   static updateReviews(restaurantID) {
     return new Promise(function (resolve, reject) {
 
@@ -184,7 +190,9 @@ class DBHelper {
   }
 
 
-
+/**
+ * Returns all temporary saved reviews from IDB
+ */
   static fetchReviewsForDBSync() {
     return new Promise(function (resolve, reject) {
       // open DB without openDatabase function because of problems with direct calls from serviceWorker
@@ -206,6 +214,11 @@ class DBHelper {
     )
   }
 
+  /**
+   * Deletes Review from IDB by given review_id
+   * 
+   * @param review_id 
+   */
   static deleteReviewAfterPOST(review_id) {
     return new Promise(function (resolve, reject) {
       // open DB without openDatabase function because of problems with direct calls from serviceWorker
@@ -287,6 +300,12 @@ class DBHelper {
     })
   }
 
+  /**
+   * Stores new is_favorite-value for given restaurant in IDB and 
+   * sends it to server via fetch-PUT
+   * 
+   * @param  restaurant 
+   */
   static changeRestaurantFavorite(restaurant) {
     return new Promise(function (resolve, reject) {
 
@@ -331,7 +350,11 @@ class DBHelper {
     })
   }
 
-
+/**
+ * Stores a temporary review in IDB.
+ * 
+ * @param  review 
+ */
   static storeTempRestaurantReview(review) {
     //Add Review to IDB
     return new Promise(function (resolve, reject) {

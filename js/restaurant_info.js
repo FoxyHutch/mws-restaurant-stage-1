@@ -3,9 +3,10 @@ let reviews;
 var map;
 
 
-
+/**
+ * Handles submit functionality for review-form
+ */
 document.addEventListener('DOMContentLoaded', function (event) {
-
   const form = document.querySelector('#review-form');
   const nameField = form.querySelector('#nameField');
   const ratingField = form.querySelector('#ratingField');
@@ -26,8 +27,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
       .then(function (result) {
         console.log(result);
       })
-      .then(function(){
-        navigator.serviceWorker.ready.then(function(swRegistration) {
+      .then(function () {
+        navigator.serviceWorker.ready.then(function (swRegistration) {
           return swRegistration.sync.register('myFirstSync');
         });
       })
@@ -51,28 +52,31 @@ window.initMap = () => {
       fillBreadcrumb();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
       DBHelper.fetchReviewByRestaurantId(restaurant.id)
-      .then(function (response) {
-        self.restaurant.reviews = response;
-      })
-      .then(function () {
-        fillReviewsHTML();
-      })
-      .catch(function(error){
-        console.log(error)
-      })
+        .then(function (response) {
+          self.restaurant.reviews = response;
+        })
+        .then(function () {
+          fillReviewsHTML();
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     }
   });
 }
 
-function addFavorite(){
+/**
+ * Gets called from favorite-button and stores new favorite-value
+ */
+function addFavorite() {
   fetchRestaurantFromURL((error, restaurant) => {
-    if(error){
+    if (error) {
       console.error(error);
     } else {
       DBHelper.changeRestaurantFavorite(restaurant)
-        .then(function(newStatus){
+        .then(function (newStatus) {
           let favoriteImg = document.getElementById('addFavorite-img');
-          favoriteImg.src = (newStatus?'img/favorite-enabled.svg':'img/favorite-disabled.svg')
+          favoriteImg.src = (newStatus ? 'img/favorite-enabled.svg' : 'img/favorite-disabled.svg')
         })
         .catch(err => console.error(err));
     }
@@ -184,28 +188,31 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   fillRestaurantFavoriteHTML();
 }
 
+/**
+ * Create Add-To-Favorites-Button HTML and adds it to webpage.
+ */
 fillRestaurantFavoriteHTML = (isFavorite = self.restaurant.is_favorite) => {
   let favoriteButton = document.getElementById('addFavorite-button');
   let isFavoriteBool
   //Double check type of is_favorite
-  if(typeof isFavorite == 'boolean'){
+  if (typeof isFavorite == 'boolean') {
     isFavoriteBool = isFavorite;
   } else {
     isFavoriteBool = (isFavorite == 'true');
   }
-  
+
   favoriteButton.setAttribute('aria-checked', isFavoriteBool);
   //Add Img
   const favoriteButtonImg = document.createElement('img');
-  favoriteButtonImg.src = (isFavoriteBool?'img/favorite-enabled.svg':'img/favorite-disabled.svg');
+  favoriteButtonImg.src = (isFavoriteBool ? 'img/favorite-enabled.svg' : 'img/favorite-disabled.svg');
   favoriteButtonImg.alt = ('Favorite Icon')
   favoriteButtonImg.id = 'addFavorite-img';
 
   //Add Text
   const favoriteButtonSpan = document.createElement('span');
-  favoriteButtonSpan.innerText = (isFavoriteBool?'Remove from Favorites':'Add to Favorites');
+  favoriteButtonSpan.innerText = (isFavoriteBool ? 'Remove from Favorites' : 'Add to Favorites');
   favoriteButtonSpan.id = 'addFavorite-text';
-  
+
   favoriteButton.appendChild(favoriteButtonImg);
   favoriteButton.appendChild(favoriteButtonSpan);
 
