@@ -5,8 +5,7 @@
   "main": "./js/main.js",
   "scripts": {
     "buildtest": "gulp build",
-    "runtest": "gulp run",
-    "rundist": "gulp run",
+    "server": "gulp run",
     "builddist": "gulp dist"
   },
   "repository": {
