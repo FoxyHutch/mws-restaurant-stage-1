@@ -194,11 +194,11 @@ fillRestaurantFavoriteHTML = (isFavorite = self.restaurant.is_favorite) => {
     isFavoriteBool = (isFavorite == 'true');
   }
   
-
+  favoriteButton.setAttribute('aria-checked', isFavoriteBool);
   //Add Img
   const favoriteButtonImg = document.createElement('img');
   favoriteButtonImg.src = (isFavoriteBool?'img/favorite-enabled.svg':'img/favorite-disabled.svg');
-  favoriteButtonImg.alt = (isFavoriteBool?'Is Favorite':'Is Not Favorite');
+  favoriteButtonImg.alt = ('Favorite Icon')
   favoriteButtonImg.id = 'addFavorite-img';
 
   //Add Text

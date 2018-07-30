@@ -15,7 +15,8 @@ You have been provided the code for a restaurant reviews website. The code has a
 1. In this folder, run "npm i" to install all dependencies.
 
 2. Run "npm run builddist" to build the server-ressources and then "npm run server" to start a new browsersync server-
-instance.
+instance. For testing simply use the default gulp command "gulp".
+
 
 
 
